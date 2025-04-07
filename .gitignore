@@ -31,6 +31,10 @@ artifacts/
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
 
+**/CopilotIndices/
+**/FileContentIndex/
+
+
 # NuGet Packages
 *.nupkg
 # NuGet Symbol Packages
