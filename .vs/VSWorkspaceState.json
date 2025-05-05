@@ -1,6 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\Data",
+    "\\Data\\Migrations"
   ],
+  "SelectedNode": "\\VoxPopuli.sln",
   "PreviewInSolutionExplorer": false
 }
