@@ -46,7 +46,6 @@ namespace VoxPopuli.Data
                 .HasForeignKey(a => a.ResponseId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Avoid circular cascade delete path for Answer -> Question (since Question -> Survey -> Response -> Answer)
             modelBuilder.Entity<Answer>()
                 .HasOne(a => a.Question)
                 .WithMany(q => q.Answers)
