@@ -1,4 +1,4 @@
-﻿YOU ARE PERSON A
+﻿YOU ARE PERSON B
 **Guiding Principles for Two-Person Split:**
 
 1.  **Minimize Overlap:** Assign distinct features or layers.
