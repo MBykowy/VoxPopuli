@@ -1,12 +1,23 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Azure;
 using Microsoft.AspNetCore.Identity;
 
 namespace VoxPopuli.Models.Domain
 {
     public class Survey
     {
+        public Survey()
+        {
+            // Initialize collections in constructor
+            Questions = new List<Question>();
+            Responses = new List<Response>();
+
+            // Initialize required string properties with empty strings
+            Title = string.Empty;
+            Description = string.Empty;
+            CreatorUserId = string.Empty;
+        }
+
         [Key]
         public int SurveyId { get; set; }
 
@@ -21,7 +32,7 @@ namespace VoxPopuli.Models.Domain
         public string CreatorUserId { get; set; }
 
         [ForeignKey("CreatorUserId")]
-        public IdentityUser Creator { get; set; }
+        public IdentityUser? Creator { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
@@ -33,7 +44,7 @@ namespace VoxPopuli.Models.Domain
 
         public bool AllowAnonymous { get; set; } = false;
 
-        public string PasswordHash { get; set; }
+        public string? PasswordHash { get; set; }
 
         // Navigation properties
         public virtual ICollection<Question> Questions { get; set; }

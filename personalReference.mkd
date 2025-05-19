@@ -1,0 +1,261 @@
+﻿YOU ARE PERSON A
+**Guiding Principles for Two-Person Split:**
+
+1.  **Minimize Overlap:** Assign distinct features or layers.
+2.  **Clear Interfaces:** Define precisely how independently developed parts will connect (e.g., method signatures in shared services, ViewModel structures, database schema).
+3.  **Shared Foundation:** Domain Models and DbContext are critical shared elements. Changes here *must* be communicated, however limited. Since "setup is done," we assume these are largely stable.
+4.  **Version Control:** Essential. Use Git with feature branches. Regular (but perhaps not constant) merges to a main development branch.
+
+---
+
+**Project Split & Responsibilities**
+
+*   **Person A: Survey Creation & Core Management**
+    *   Focus: Enables users to define and manage the structure and settings of surveys. Backend logic for survey persistence.
+*   **Person B: Survey Participation, Results Visualization & Admin**
+    *   Focus: Enables users/respondents to take surveys, view results, and administrative oversight. Frontend for survey taking and result display.
+
+**Shared Components & Connection Points (CRITICAL - Must be Agreed Upon & Stable):**
+
+1.  **Domain Models (`Models/Domain/`)**:
+    *   **Contract:** `Survey.cs`, `Question.cs`, `QuestionType.cs` (enum), `AnswerOption.cs`, `Response.cs`, `Answer.cs`, `ApplicationUser.cs`.
+    *   **Responsibility:** Considered "defined" from setup. Any absolutely necessary changes *must* be communicated and agreed upon by both. One person (e.g., Person A, as they are closer to survey definition) might primarily own making changes after agreement, followed by a migration.
+2.  **`Data/ApplicationDbContext.cs`**:
+    *   **Contract:** `DbSet<>` properties and core `OnModelCreating()` configurations (relationships, initial role seeding).
+    *   **Responsibility:** Defined. Both use it. Migrations are a critical point; if new ones are needed, one person (e.g., Person A) runs them after schema changes are agreed upon.
+3.  **Key ViewModels (Shared DTOs):**
+    *   `Models/ViewModels/Questions/QuestionViewModel.cs` & `AnswerOptionViewModel.cs`:
+        *   **Contract:** Structure used by Person A for survey creation forms and by Person B for displaying questions when taking a survey and in results.
+        *   **Responsibility:** Changes need agreement.
+4.  **`Program.cs`**:
+    *   **Contract:** Service registrations (DbContext, Identity, AutoMapper, Logging).
+    *   **Responsibility:** Defined. Adding new shared services needs coordination.
+5.  **AutoMapper Profiles (`Mappings/`):**
+    *   **Contract:** Profiles like `SurveyMappingProfile.cs` might be touched by both if mapping from shared Domain models to their respective ViewModels.
+    *   **Responsibility:** Minimize conflicting changes. Each person focuses on mappings relevant to their ViewModels.
+6.  **Shared Views (`Views/Shared/`):**
+    *   **Contract:** `_Layout.cshtml`, `_ValidationScriptsPartial.cshtml`, `Error.cshtml`.
+    *   **Responsibility:** Defined. Changes to shared layout need agreement.
+7.  **URLs/Routes:**
+    *   **Contract:** Standard MVC routing, but specific routes like `/Surveys/Results/{id}` (used by A to link, implemented by B) or `/Responses/Take/{id}` (used by A to link, implemented by B) are connection points.
+8.  **Service Interfaces (If `Services/` layer is used extensively):**
+    *   **Contract:** If, for example, an `ISurveyDataService` is defined to fetch survey information, its interface is the contract.
+    *   **Responsibility:** One person defines/implements, the other consumes.
+
+---
+
+**Phase 1: Core Survey Definition & Management (CRUD)**
+
+*   **Person A: Survey Creation & Management**
+    1.  **Domain Models & DbContext:** (Verify existing, coordinate any *essential* minor tweaks with Person B).
+    2.  **Database Migration:** (If schema changes agreed, Person A runs migration).
+    3.  **ViewModels (`Models/ViewModels/Surveys/`):**
+        *   Create/Refine: `SurveyCreateViewModel.cs`, `SurveyEditViewModel.cs`, `SurveyListViewModel.cs` (for "My Surveys"), `SurveyDetailsViewModel.cs` (for creator's view).
+        *   Ensure `List<QuestionViewModel> Questions` is part of create/edit VMs.
+        *   Define `Models/ViewModels/Questions/QuestionViewModel.cs` and `AnswerOptionViewModel.cs` (this is a **CONNECTION POINT** with Person B).
+    4.  **AutoMapper Profile (`Mappings/SurveyMappingProfile.cs`):**
+        *   Implement mappings for Person A's ViewModels from Domain Models.
+    5.  **`SurveysController.cs` (Creator-focused actions):**
+        *   Implement: `Index` (My Surveys), `Create` (GET/POST), `Details` (creator's view), `Edit` (GET/POST), `Delete` (GET/POST).
+        *   POST actions handle mapping, validation, password hashing, saving `Survey` with its `Questions` and `AnswerOptions`.
+    6.  **Survey Views (`Views/Surveys/`):**
+        *   Create: `Index.cshtml`, `Create.cshtml`, `Edit.cshtml`, `Details.cshtml`, `Delete.cshtml`.
+    7.  **Client-Side JavaScript (`wwwroot/js/survey-editor.js`):**
+        *   Implement dynamic form logic for adding/removing questions and options in `Create.cshtml` and `Edit.cshtml`.
+
+*   **Person B: (Primarily Observation & Preparation)**
+    1.  **Domain Models & DbContext:** Understand the agreed-upon schema thoroughly.
+    2.  **ViewModels:** Understand the structure of `QuestionViewModel.cs` and `AnswerOptionViewModel.cs` (CONNECTION POINT).
+    3.  **Start planning `TakeSurveyViewModel` and `SurveyResultViewModel`** based on agreed domain models and `QuestionViewModel`.
+
+---
+
+**Phase 2: Survey Participation & Result Visualization**
+
+*   **Person A: (Support & Minor Adjustments)**
+    1.  Ensure `Survey` domain model has all necessary properties for Person B (e.g., `IsActive`, `StartDate`, `EndDate`, `PasswordHash`).
+    2.  Provide clear links/routes from their views (e.g., "Take Survey" link, "View Results" link from "My Surveys").
+
+*   **Person B: Survey Taking & Results**
+    1.  **ViewModels (`Models/ViewModels/Responses/` & relevant parts of `Surveys/`):**
+        *   Create: `TakeSurveyViewModel.cs` (uses shared `QuestionViewModel`).
+        *   Create: `SurveyResultViewModel.cs`, `QuestionResultViewModel.cs`, `OptionResultViewModel.cs`, `ChartDataViewModel.cs` (uses shared `QuestionViewModel`).
+    2.  **AutoMapper Profile (`Mappings/ResponseMappingProfile.cs` or extend existing):**
+        *   Implement mappings for Person B's ViewModels.
+    3.  **`ResponsesController.cs`:**
+        *   Implement: `Take` (GET/POST - handles fetching survey, checking availability, saving responses and answers), `ThankYou` (GET).
+    4.  **`SurveysController.cs` - Results Action (CONNECTION POINT with Person A's controller):**
+        *   Implement: `Results` (GET). Authorize, fetch survey, aggregate answer data, map to `SurveyResultViewModel`.
+    5.  **Views (`Views/Responses/` & `Views/Surveys/Results.cshtml`):**
+        *   Create: `Take.cshtml`, `ThankYou.cshtml`.
+        *   Create: `Results.cshtml` (includes `<canvas>` for charts).
+    6.  **Charting (`Results.cshtml` & associated JS):**
+        *   Implement Chart.js integration to visualize data from `SurveyResultViewModel`.
+
+---
+
+**Phase 3: Feature Enhancements**
+
+*   **Shared Responsibility (Coordination Required for Domain/Shared ViewModel changes):**
+    *   **Advanced Question Types:**
+        *   **Both:** Agree on new `QuestionType` enum values.
+        *   **Person A:** If DB schema changes (e.g., new fields in `Answer.cs`), makes them and runs migration. Updates `survey-editor.js` and creator views.
+        *   **Person B:** Updates `Take.cshtml` to render, `ResponsesController` to save, and `Results.cshtml`/aggregation for new types.
+    *   **Advanced Survey Settings:**
+        *   **Person A:** Adds fields to `Survey.cs`, migrates DB. Updates `SurveyCreate/EditViewModel` and corresponding views/controller logic.
+        *   **Person B:** Updates `ResponsesController` `Take` (GET) to enforce new settings.
+
+*   **Person A: User Profile & Search/Filter for "My Surveys"**
+    1.  **User Profile Page:** Implement (scaffold Identity or custom).
+    2.  **Survey Search & Filtering:** Enhance `SurveysController` `Index` and `Views/Surveys/Index.cshtml`.
+
+*   **Person B: Export Results & Public Survey Listing (if applicable)**
+    1.  **Export Results:** Add action to `SurveysController` (or a new `ResultsService`) to generate CSV. Add button to `Results.cshtml`.
+    2.  **Public Survey Listing/Search (if feature added):** Implement public-facing list, search, and filtering for surveys marked "public."
+
+*   **Either Person (or Dedicated if complex): Email Notifications**
+    1.  Requires email service setup. Can be assigned to one person. If it touches both flows (e.g., notify creator on response), the triggering points are connection points.
+
+---
+
+**Phase 4: Administration, Quality, Testing & Finalization**
+
+*   **Person A: Testing Creator Flow & General Code Quality**
+    1.  **Unit & Integration Testing:** Focus on `SurveysController` (creator actions), `survey-editor.js` logic, and related services/ViewModels.
+    2.  **Code Quality & Documentation:** For their responsible areas.
+
+*   **Person B: Admin Panel, Testing Respondent/Results Flow & General Code Quality**
+    1.  **Admin Panel (`AdminController.cs`, `Views/Admin/`):** Implement User Management, Survey Management (all surveys), System Statistics.
+        *   `Models/ViewModels/Admin/` for admin-specific views.
+        *   Needs to use shared domain models and `DbContext`.
+    2.  **Unit & Integration Testing:** Focus on `ResponsesController`, `SurveysController` (`Results` action), Admin features, result aggregation, charting logic.
+    3.  **Code Quality & Documentation:** For their responsible areas.
+
+*   **Both (Coordination & Shared Effort):**
+    1.  **Robust Logging & Error Handling:** Ensure consistent logging practices across all developed components. Implement global error handling.
+    2.  **Security Hardening:** Review all inputs, authorization, anti-forgery, etc.
+    3.  **Data Seeding (`Data/DbInitializer.cs`):** Coordinate on seeding admin user, roles, sample data. One person can implement the seeder, with input from the other.
+    4.  **Final Integration Testing:** Thoroughly test the entire application flow, focusing on the connection points.
+
+**General Collaboration Workflow:**
+
+1.  **Initial Agreement:** Confirm understanding of shared components (Domain Models, DbContext, key ViewModels) before coding starts.
+2.  **Version Control (Git):**
+    *   Use a shared remote repository (e.g., GitHub, Azure DevOps).
+    *   Both work on separate feature branches (e.g., `feature/personA-survey-create`, `feature/personB-survey-take`).
+    *   Regularly pull changes from the main development branch (e.g., `develop`) into feature branches to stay updated.
+    *   Create Pull Requests (PRs) to merge feature branches into `develop`. The other person can (and should, if possible) review PRs, especially for changes impacting shared components.
+3.  **Communication for Blockers/Shared Changes:** If a change to a shared component is absolutely necessary, a brief, focused communication (email, short call) must occur to agree on the change before implementation.
+4.  **Defined Integration Points:** Before a major merge (e.g., end of a phase), ensure the connection points function as expected.
+Target file structure with person by person split:
+
+
+```
+/VoxPopuli.sln                        # (S) Solution File
+└─── src/                                # (S) Source Code Directory
+     └─── VoxPopuli.WebApp/            # (S) Main ASP.NET Core MVC Project
+          ├── wwwroot/                    # Static files
+          │   ├── css/
+          │   │   └─── site.css           # (S)
+          │   ├── js/
+          │   │   └─── site.js            # (S)
+          │   │   └─── survey-editor.js   # (A)
+          │   │   └─── chart.umd.js       # (B) - If local
+          │   └─── lib/                    # (S)
+          │
+          ├── Areas/                      # (S)
+          │   └─── Identity/              # (A/S)
+          │        └─── Pages/Account/
+          │
+          ├── Controllers/                # MVC Controllers
+          │   ├── HomeController.cs       # (S)
+          │   ├── AccountController.cs    # (A/S)
+          │   ├── SurveysController.cs     # (A) for CRUD, (B) for Results action
+          │   ├── QuestionsController.cs  # (A) - If AJAX for survey editor
+          │   ├── ResponsesController.cs  # (B)
+          │   └─── AdminController.cs      # (B)
+          │
+          ├── Data/                       # Data Access Layer components
+          │   ├── ApplicationDbContext.cs  # (S)
+          │   ├── Migrations/             # (A/S)
+          │   └─── DbInitializer.cs        # (S)
+          │
+          ├── Mappings/                   # AutoMapper Profiles
+          │   └─── SurveyMappingProfile.cs   # (A) for creator, (B) for results/take
+          │   └─── ResponseMappingProfile.cs # (B)
+          │   └─── UserMappingProfile.cs   # (B)
+          │
+          ├── Models/                     # Data models
+          │   ├── Domain/                 # (S) - CRITICAL SHARED
+          │   │   ├── ApplicationUser.cs
+          │   │   ├── Survey.cs
+          │   │   ├── Question.cs
+          │   │   ├── QuestionType.cs
+          │   │   ├── AnswerOption.cs
+          │   │   ├── Response.cs
+          │   │   └─── Answer.cs
+          │   │
+          │   └─── ViewModels/             # View-specific models
+          │        ├── Account/            # (A)
+          │        ├── Surveys/
+          │        │   ├── SurveyCreateViewModel.cs       # (A)
+          │        │   ├── SurveyEditViewModel.cs         # (A)
+          │        │   ├── SurveyListViewModel.cs         # (A)
+          │        │   ├── SurveyListItemViewModel.cs     # (A)
+          │        │   ├── SurveyDetailsViewModel.cs      # (A)
+          │        │   ├── SurveyResultViewModel.cs       # (B)
+          │        │   ├── QuestionResultViewModel.cs     # (B)
+          │        │   ├── OptionResultViewModel.cs       # (B)
+          │        │   └─── ChartDataViewModel.cs        # (B)
+          │        ├── Questions/          # CONNECTION POINT
+          │        │   ├── QuestionViewModel.cs         # (S) - Defined by A, Used by B
+          │        │   └─── AnswerOptionViewModel.cs     # (S) - Defined by A, Used by B
+          │        ├── Responses/            # (B)
+          │        │   ├── TakeSurveyViewModel.cs
+          │        │   └─── AnswerSubmissionViewModel.cs
+          │        ├── Admin/                # (B)
+          │        └─── ErrorViewModel.cs       # (S)
+          │
+          ├── Services/                   # Optional: Business logic services
+          │   ├── Interfaces/             # (S) - Contracts
+          │   ├── SurveyService.cs          # (A)
+          │   ├── ResponseService.cs        # (B)
+          │   ├── ChartService.cs           # (B)
+          │   └─── EmailService.cs           # (A or B)
+          │
+          ├── Views/                      # MVC Views (.cshtml files)
+          │   ├── Account/                # (A/S)
+          │   ├── Admin/                  # (B)
+          │   ├── Home/                   # (S)
+          │   ├── Responses/              # (B)
+          │   ├── Surveys/
+          │   │    ├── Index.cshtml       # (A)
+          │   │    ├── Create.cshtml      # (A)
+          │   │    ├── Edit.cshtml        # (A)
+          │   │    ├── Details.cshtml     # (A)
+          │   │    ├── Delete.cshtml      # (A)
+          │   │    └─── Results.cshtml     # (B)
+          │   └─── Shared/                 # (S)
+          │        ├── _Layout.cshtml
+          │        ├── _ValidationScriptsPartial.cshtml
+          │        ├── _LoginPartial.cshtml
+          │        ├── Error.cshtml
+          │        └─── _QuestionEditorPartial.cshtml  # (A)
+          │        └─── _AnswerOptionEditorPartial.cshtml # (A)
+          │
+          ├── Properties/
+          │   └─── launchSettings.json   # (S)
+          │
+          ├── appsettings.json              # (S)
+          ├── appsettings.Development.json  # (S)
+          ├── Program.cs                  # (S)
+          └─── VoxPopuli.WebApp.csproj     # (S)
+└─── tests/                                # Test Projects Directory
+     └─── VoxPopuli.WebApp.Tests/         # (S) - Structure
+          ├── Controllers/
+          │    ├── SurveysControllerTests.cs    # (A) for creator, (B) for Results
+          │    ├── ResponsesControllerTests.cs  # (B)
+          │    └─── AdminControllerTests.cs    # (B)
+          ├── Services/                   # (A) or (B)
+          └─── VoxPopuli.WebApp.Tests.csproj  # (S)
+```

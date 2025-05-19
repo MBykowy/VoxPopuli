@@ -12,8 +12,8 @@ using VoxPopuli.Data;
 namespace VoxPopuli.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250407210433_FixCascadeDeleteIssue")]
-    partial class FixCascadeDeleteIssue
+    [Migration("20250519194427_CreateSurveyStructure")]
+    partial class CreateSurveyStructure
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -381,7 +381,6 @@ namespace VoxPopuli.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("PasswordHash")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("StartDate")

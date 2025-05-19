@@ -5,6 +5,12 @@ namespace VoxPopuli.Models.Domain
 {
     public class AnswerOption
     {
+        public AnswerOption()
+        {
+            OptionText = string.Empty;
+            Answers = new List<Answer>();
+        }
+
         [Key]
         public int AnswerOptionId { get; set; }
 
@@ -12,7 +18,7 @@ namespace VoxPopuli.Models.Domain
         public int QuestionId { get; set; }
 
         [ForeignKey("QuestionId")]
-        public Question Question { get; set; }
+        public Question? Question { get; set; }
 
         [Required]
         [StringLength(500)]
@@ -24,4 +30,5 @@ namespace VoxPopuli.Models.Domain
         // Navigation properties
         public virtual ICollection<Answer> Answers { get; set; }
     }
+
 }

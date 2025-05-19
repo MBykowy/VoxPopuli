@@ -38,13 +38,13 @@ namespace VoxPopuli.Data
                 .HasMany(s => s.Responses)
                 .WithOne(r => r.Survey)
                 .HasForeignKey(r => r.SurveyId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Response>()
                 .HasMany(r => r.Answers)
                 .WithOne(a => a.Response)
                 .HasForeignKey(a => a.ResponseId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Answer>()
                 .HasOne(a => a.Question)

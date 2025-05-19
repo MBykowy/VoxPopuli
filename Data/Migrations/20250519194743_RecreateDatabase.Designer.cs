@@ -12,8 +12,8 @@ using VoxPopuli.Data;
 namespace VoxPopuli.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250407210142_AddSurveyCoreEntities")]
-    partial class AddSurveyCoreEntities
+    [Migration("20250519194743_RecreateDatabase")]
+    partial class RecreateDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -381,7 +381,6 @@ namespace VoxPopuli.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("PasswordHash")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("StartDate")
@@ -461,7 +460,7 @@ namespace VoxPopuli.Data.Migrations
                     b.HasOne("VoxPopuli.Models.Domain.Response", "Response")
                         .WithMany("Answers")
                         .HasForeignKey("ResponseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("VoxPopuli.Models.Domain.AnswerOption", "SelectedOption")
@@ -509,7 +508,7 @@ namespace VoxPopuli.Data.Migrations
                     b.HasOne("VoxPopuli.Models.Domain.Survey", "Survey")
                         .WithMany("Responses")
                         .HasForeignKey("SurveyId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Respondent");

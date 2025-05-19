@@ -6,11 +6,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace VoxPopuli.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddSurveyCoreEntities : Migration
+    public partial class CreateSurveyStructure : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // Create Surveys table
             migrationBuilder.CreateTable(
                 name: "Surveys",
                 columns: table => new
@@ -25,7 +26,7 @@ namespace VoxPopuli.Data.Migrations
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     AllowAnonymous = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -38,6 +39,7 @@ namespace VoxPopuli.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            // Create Questions table
             migrationBuilder.CreateTable(
                 name: "Questions",
                 columns: table => new
@@ -61,6 +63,7 @@ namespace VoxPopuli.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            // Create Responses table
             migrationBuilder.CreateTable(
                 name: "Responses",
                 columns: table => new
@@ -86,9 +89,10 @@ namespace VoxPopuli.Data.Migrations
                         column: x => x.SurveyId,
                         principalTable: "Surveys",
                         principalColumn: "SurveyId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction); // Important: Use NoAction here
                 });
 
+            // Create AnswerOptions table
             migrationBuilder.CreateTable(
                 name: "AnswerOptions",
                 columns: table => new
@@ -110,6 +114,7 @@ namespace VoxPopuli.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            // Create Answers table
             migrationBuilder.CreateTable(
                 name: "Answers",
                 columns: table => new
@@ -129,20 +134,24 @@ namespace VoxPopuli.Data.Migrations
                         name: "FK_Answers_AnswerOptions_SelectedOptionId",
                         column: x => x.SelectedOptionId,
                         principalTable: "AnswerOptions",
-                        principalColumn: "AnswerOptionId");
+                        principalColumn: "AnswerOptionId",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Answers_Questions_QuestionId",
                         column: x => x.QuestionId,
                         principalTable: "Questions",
-                        principalColumn: "QuestionId");
+                        principalColumn: "QuestionId",
+                        onDelete: ReferentialAction.NoAction); // Important: Use NoAction here
+                  
                     table.ForeignKey(
                         name: "FK_Answers_Responses_ResponseId",
                         column: x => x.ResponseId,
                         principalTable: "Responses",
                         principalColumn: "ResponseId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);  // <
                 });
 
+            // Create indexes
             migrationBuilder.CreateIndex(
                 name: "IX_AnswerOptions_QuestionId",
                 table: "AnswerOptions",

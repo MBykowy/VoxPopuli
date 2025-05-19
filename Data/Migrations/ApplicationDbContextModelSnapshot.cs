@@ -378,7 +378,6 @@ namespace VoxPopuli.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("PasswordHash")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("StartDate")
@@ -458,7 +457,7 @@ namespace VoxPopuli.Data.Migrations
                     b.HasOne("VoxPopuli.Models.Domain.Response", "Response")
                         .WithMany("Answers")
                         .HasForeignKey("ResponseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("VoxPopuli.Models.Domain.AnswerOption", "SelectedOption")
