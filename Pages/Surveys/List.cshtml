@@ -5,41 +5,68 @@
 }
 
 <div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1>My Surveys</h1>
-            <p class="lead">View, edit and manage your surveys</p>
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @Model.StatusMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
+    }
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
         <div>
-            <a asp-page="Create" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Create New Survey
+            <h1 class="mb-1">My Surveys</h1>
+            <p class="lead text-muted">View, edit and manage your surveys</p>
+        </div>
+        <div class="mt-3 mt-md-0">
+            <a asp-page="Create" class="btn btn-primary rounded-pill">
+                <i class="bi bi-plus-circle me-2"></i> Create New Survey
             </a>
         </div>
     </div>
 
     @if (!Model.Surveys.Any())
     {
-        <div class="alert alert-info">
-            <h4 class="alert-heading">No surveys found</h4>
-            <p>You haven't created any surveys yet. Click the "Create New Survey" button to get started.</p>
+        <div class="text-center py-5 rounded-3 bg-light">
+            <i class="bi bi-clipboard-data display-4 text-muted mb-3"></i>
+            <h4 class="fw-normal mb-2">No surveys found</h4>
+            <p class="text-muted col-md-8 mx-auto">
+                You haven't created any surveys yet. Click the "Create New Survey" button to get started.
+            </p>
+            <a asp-page="Create" class="btn btn-primary rounded-pill mt-2">
+                <i class="bi bi-plus-circle me-2"></i> Create Your First Survey
+            </a>
         </div>
     }
     else
     {
-        <div class="row">
+        <div class="row g-4">
             @foreach (var survey in Model.Surveys)
             {
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100 survey-card">
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 survey-card shadow-sm">
+                        <div class="card-header d-flex justify-content-between align-items-center py-3 bg-light">
+                            <span class="badge @(survey.IsActive ? "text-bg-success" : "text-bg-secondary")">
+                                <i class="bi @(survey.IsActive ? "bi-circle-fill" : "bi-circle")"></i>
+                                @(survey.IsActive ? "Active" : "Inactive")
+                            </span>
+                            <span class="badge text-bg-info">
+                                <i class="bi bi-people"></i> @survey.ResponseCount responses
+                            </span>
+                        </div>
                         <div class="card-body">
-                            <h5 class="card-title">@survey.Title</h5>
-                            <p class="card-text">@(survey.Description?.Length > 100 ? survey.Description.Substring(0, 100) + "..." : survey.Description)</p>
-
-                            <div class="d-flex justify-content-between">
-                                <span class="badge bg-@(survey.IsActive ? "success" : "secondary")">
-                                    @(survey.IsActive ? "Active" : "Inactive")
-                                </span>
-                                <span class="badge bg-info">@survey.ResponseCount responses</span>
+                            <h5 class="card-title mb-2">@survey.Title</h5>
+                            <p class="card-text text-muted mb-3" style="min-height: 48px;">
+                                @(string.IsNullOrEmpty(survey.Description) ? "No description provided" :
+                                    (survey.Description.Length > 100 ? survey.Description.Substring(0, 97) + "..." : survey.Description))
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center small text-muted mb-3">
+                                <div>
+                                    <i class="bi bi-calendar-date me-1"></i> Created: @survey.CreatedAt.ToString("MMM dd, yyyy")
+                                </div>
+                                <div>
+                                    <i class="bi bi-question-circle me-1"></i> @survey.QuestionCount questions
+                                </div>
                             </div>
                         </div>
                         <div class="card-footer bg-transparent">
@@ -56,18 +83,24 @@
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
                                         <a class="dropdown-item" href="#" onclick="copyShareLink(@survey.SurveyId)">
-                                            <i class="bi bi-share"></i> Share
+                                            <i class="bi bi-share me-2"></i> Share
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-page="Preview" asp-route-id="@survey.SurveyId">
+                                            <i class="bi bi-eye me-2"></i> Preview
                                         </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item" asp-page="ExportResults" asp-route-id="@survey.SurveyId">
-                                            <i class="bi bi-download"></i> Export
+                                            <i class="bi bi-download me-2"></i> Export
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#deleteSurveyModal" data-survey-id="@survey.SurveyId" data-survey-title="@survey.Title">
-                                            <i class="bi bi-trash"></i> Delete
+                                        <a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#deleteSurveyModal"
+                                           data-survey-id="@survey.SurveyId" data-survey-title="@survey.Title">
+                                            <i class="bi bi-trash me-2"></i> Delete
                                         </a>
                                     </li>
                                 </ul>
@@ -87,13 +120,19 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <p>Are you sure you want to delete the survey "<span id="surveyTitle"></span>"? This action cannot be undone.</p>
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            This action cannot be undone. All survey data, questions, and responses will be permanently deleted.
+                        </div>
+                        <p>Are you sure you want to delete the survey "<span id="surveyTitle" class="fw-bold"></span>"?</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
                         <form method="post" asp-page-handler="Delete">
                             <input type="hidden" id="surveyIdToDelete" name="id" value="" />
-                            <button type="submit" class="btn btn-danger">Delete Survey</button>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash me-1"></i> Delete Survey
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -101,6 +140,29 @@
         </div>
     }
 </div>
+
+<style>
+    .survey-card {
+        transition: all 0.2s ease;
+        border-left: 4px solid transparent;
+    }
+
+        .survey-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+            border-left-color: var(--bs-primary);
+        }
+
+    .badge .bi {
+        font-size: 0.7em;
+        margin-right: 3px;
+    }
+
+    /* Add a subtle hover effect to buttons */
+    .btn-outline-primary:hover, .btn-outline-success:hover {
+        box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+</style>
 
 @section Scripts {
     <script>
@@ -121,10 +183,23 @@
         // Copy share link function
         function copyShareLink(surveyId) {
             var url = window.location.origin + "/Responses/Take?id=" + surveyId;
+
+            // Use the clipboard API to copy the text
             navigator.clipboard.writeText(url).then(function() {
-                alert('Survey link copied to clipboard!');
-            }, function() {
-                alert('Failed to copy link.');
+                // Create a temporary message element
+                const message = document.createElement('div');
+                message.innerHTML = '<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050"><div class="toast align-items-center text-bg-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true"><div class="d-flex"><div class="toast-body"><i class="bi bi-check-circle-fill me-2"></i>Survey link copied to clipboard!</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div></div></div>';
+                document.body.appendChild(message);
+
+                // Remove after 3 seconds
+                setTimeout(function() {
+                    message.firstChild.classList.remove('show');
+                    setTimeout(function() {
+                        document.body.removeChild(message);
+                    }, 150);
+                }, 3000);
+            }, function(err) {
+                alert('Failed to copy link: ' + err);
             });
         }
     </script>

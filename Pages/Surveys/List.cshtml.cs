@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -23,6 +24,9 @@ namespace VoxPopuli.Pages.Surveys
 
         public List<SurveyListItemViewModel> Surveys { get; set; } = new List<SurveyListItemViewModel>();
 
+        [TempData]
+        public string StatusMessage { get; set; }
+
         public async Task<IActionResult> OnGetAsync()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -33,7 +37,6 @@ namespace VoxPopuli.Pages.Surveys
                 : _context.Surveys.Where(s => s.CreatorUserId == userId);
 
             Surveys = await query
-                .Include(s => s.Responses)
                 .OrderByDescending(s => s.CreatedAt)
                 .Select(s => new SurveyListItemViewModel
                 {
@@ -44,7 +47,8 @@ namespace VoxPopuli.Pages.Surveys
                     CreatedAt = s.CreatedAt,
                     StartDate = s.StartDate,
                     EndDate = s.EndDate,
-                    ResponseCount = s.Responses.Count
+                    ResponseCount = s.Responses.Count,
+                    QuestionCount = s.Questions.Count
                 })
                 .ToListAsync();
 
@@ -70,6 +74,7 @@ namespace VoxPopuli.Pages.Surveys
             _context.Surveys.Remove(survey);
             await _context.SaveChangesAsync();
 
+            StatusMessage = $"Survey '{survey.Title}' has been deleted.";
             return RedirectToPage();
         }
     }
