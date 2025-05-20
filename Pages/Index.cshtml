@@ -1,0 +1,125 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Welcome to VoxPopuli";
+}
+
+<div class="container px-4 py-5">
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+        <div class="col-10 col-sm-8 col-lg-6 mx-auto mx-lg-0">
+            @* You can use an illustrative image or a large icon here *@
+            @* Option 1: Large Bootstrap Icon (simple & clean) *@
+            <div class="text-center text-lg-end mb-4 mb-lg-0">
+                <i class="bi bi-megaphone-fill display-1 text-primary opacity-75" style="font-size: 10rem;"></i>
+                @* Other icon ideas: bi-bar-chart-line-fill, bi-chat-quote-fill, bi-people-fill *@
+            </div>
+
+            @* Option 2: Placeholder for an SVG or Image (if you have one)
+            <img src="~/images/voxpopuli-hero.svg" class="d-block mx-lg-auto img-fluid" alt="VoxPopuli Illustration" width="700" height="500" loading="lazy">
+            *@
+        </div>
+        <div class="col-lg-6">
+            <h1 class="display-4 fw-bold lh-1 mb-4">
+                Welcome to <span class="text-primary">VoxPopuli</span>!
+            </h1>
+            <p class="lead mb-4">
+                The platform where your voice matters. Easily create, distribute, and analyze surveys to gather valuable insights and opinions.
+                Whether you're conducting market research, employee feedback, or academic studies, VoxPopuli empowers you to connect and understand.
+            </p>
+            <div class="d-grid gap-3 d-md-flex justify-content-md-start">
+                <a asp-page="/Surveys/Create" class="btn btn-primary btn-lg px-4 me-md-2 rounded-pill">
+                    <i class="bi bi-plus-circle-fill me-2"></i>Create Your First Survey
+                </a>
+                <a asp-page="/Surveys/Dashboard" class="btn btn-outline-secondary btn-lg px-4 rounded-pill">
+                    <i class="bi bi-speedometer2 me-2"></i>Go to Dashboard
+                </a>
+            </div>
+            <p class="text-muted small mt-5">
+                Need help? Check out our <a asp-page="/Help/GettingStarted">Getting Started Guide</a> or <a asp-page="/Support">contact support</a>.
+            </p>
+        </div>
+    </div>
+
+    @* Optional: Feature Highlights Section *@
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3 mt-4 border-top">
+        <div class="feature-col col text-center">
+            <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-4 rounded-3 mb-3 p-3 shadow">
+                <i class="bi bi-pencil-square"></i>
+            </div>
+            <h4 class="fw-semibold mb-0">Intuitive Design</h4>
+            <p class="text-muted">Craft beautiful surveys with an easy-to-use interface.</p>
+        </div>
+        <div class="feature-col col text-center">
+            <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-4 rounded-3 mb-3 p-3 shadow">
+                <i class="bi bi-share-fill"></i>
+            </div>
+            <h4 class="fw-semibold mb-0">Effortless Distribution</h4>
+            <p class="text-muted">Share your surveys widely and manage responses effectively.</p>
+        </div>
+        <div class="feature-col col text-center">
+            <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-4 rounded-3 mb-3 p-3 shadow">
+                <i class="bi bi-graph-up-arrow"></i>
+            </div>
+            <h4 class="fw-semibold mb-0">Powerful Analytics</h4>
+            <p class="text-muted">Gain actionable insights with comprehensive data visualization.</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Add to your site's global CSS or a page-specific style block */
+    body {
+        /* Assuming you might have a light gray background from other pages */
+        /* background-color: var(--bs-gray-100);  */
+    }
+
+    .display-1.text-primary {
+        /* If you want a gradient on the large icon */
+        /* background: linear-gradient(45deg, var(--bs-primary), var(--bs-indigo)); */
+        /* -webkit-background-clip: text; */
+        /* -webkit-text-fill-color: transparent; */
+        /* filter: drop-shadow(3px 5px 5px rgba(0,0,0,0.1)); */
+    }
+
+    .btn-primary {
+        /* Example: Add a subtle gradient or shadow to primary buttons */
+        /* background-image: linear-gradient(to bottom right, var(--bs-primary), #0a58ca); */
+        /* box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); */
+    }
+    .btn-primary:hover {
+        /* Slightly darker on hover */
+        /* background-image: linear-gradient(to bottom right, #0a58ca, #0a50b3); */
+    }
+
+
+    .btn-lg i.bi {
+        vertical-align: -0.125em; /* Align icons better in buttons */
+        font-size: 1.1em; /* Slightly larger icons in large buttons */
+    }
+
+    .feature-col {
+        transition: transform 0.2s ease-in-out;
+    }
+    .feature-col:hover {
+        transform: translateY(-5px);
+    }
+
+    .feature-icon-small {
+        width: 3.5rem;
+        height: 3.5rem;
+    }
+
+    .feature-icon-small .bi {
+        font-size: 1.75rem; /* Adjust icon size within the circle */
+        color: white; /* Ensure icon color contrasts with text-bg-primary */
+    }
+
+    /* Optional: If you want a slightly different body background for just the homepage */
+    /*
+    .homepage-body {
+        background-color: #f8f9fa;
+    }
+
+</style>
+
+@* The C# Model remains the same as it's very simple for this page *@

@@ -1,0 +1,191 @@
+﻿@page
+@model VoxPopuli.Pages.Surveys.CreateModel
+@{
+    ViewData["Title"] = "Craft Your New Survey";
+}
+
+<div class="container py-4 py-lg-5">
+    <div class="page-header-section text-center">
+        <i class="bi bi-input-cursor-text display-2 text-primary mb-3"></i>
+        <h1 class="display-5 fw-bold mb-2">Craft Your New Survey</h1>
+        <p class="lead text-muted col-lg-8 mx-auto">
+            Fill in the details, configure settings, and add your questions below to bring your survey to life.
+        </p>
+    </div>
+
+    <form method="post" id="surveyForm" class="needs-validation" novalidate>
+        <div class="row mb-4 gx-lg-4">
+            <div class="col-lg-7 mb-4 mb-lg-0">
+                <div class="card shadow-lg h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0 d-flex align-items-center">
+                            <i class="bi bi-file-text-fill text-primary me-2 fs-4"></i>Survey Details
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-4">
+                            <label asp-for="Survey.Title" class="form-label fw-semibold">Survey Title <span class="text-danger">*</span></label>
+                            <input asp-for="Survey.Title" class="form-control form-control-lg" required placeholder="E.g., Quarterly Employee Feedback" />
+                            <span asp-validation-for="Survey.Title" class="invalid-feedback d-block"></span>
+                            <div class="form-text">A clear, concise title helps respondents understand the survey's purpose immediately.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Survey.Description" class="form-label fw-semibold">Description</label>
+                            <textarea asp-for="Survey.Description" class="form-control" rows="5" placeholder="Provide context: What is this survey about? Why is it important? (Optional)"></textarea>
+                            <span asp-validation-for="Survey.Description" class="invalid-feedback d-block"></span>
+                            <div class="form-text">Give a brief overview. You can mention estimated completion time if known.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="card shadow-lg h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0 d-flex align-items-center">
+                            <i class="bi bi-sliders text-primary me-2 fs-4"></i>Survey Settings
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="form-check form-switch mb-3 pt-1">
+                            <input asp-for="Survey.IsActive" class="form-check-input" type="checkbox" role="switch" id="isActiveSwitch" />
+                            <label asp-for="Survey.IsActive" class="form-check-label fw-semibold" for="isActiveSwitch"></label>
+                            <div class="form-text">Controls if the survey can accept new responses. (Default: Active)</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Survey.StartDate" class="form-label fw-semibold">Start Date</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-calendar-play"></i></span>
+                                <input asp-for="Survey.StartDate" type="datetime-local" class="form-control" />
+                            </div>
+                            <span asp-validation-for="Survey.StartDate" class="invalid-feedback d-block"></span>
+                            <div class="form-text">When the survey becomes available. (Optional)</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Survey.EndDate" class="form-label fw-semibold">End Date</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-calendar-x"></i></span>
+                                <input asp-for="Survey.EndDate" type="datetime-local" class="form-control" />
+                            </div>
+                            <span asp-validation-for="Survey.EndDate" class="invalid-feedback d-block"></span>
+                            <div class="form-text">When the survey stops accepting responses. (Optional)</div>
+                        </div>
+
+                        <div class="form-check form-switch mb-3 pt-1">
+                            <input asp-for="Survey.AllowAnonymous" class="form-check-input" type="checkbox" role="switch" id="allowAnonymousSwitch" />
+                            <label asp-for="Survey.AllowAnonymous" class="form-check-label fw-semibold" for="allowAnonymousSwitch"></label>
+                            <div class="form-text">If checked, users don't need to log in to respond. (Default: Not allowed)</div>
+                        </div>
+
+                        <div class="mb-0">
+                            <label asp-for="Survey.Password" class="form-label fw-semibold">Password Protection</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-shield-lock-fill"></i></span>
+                                <input asp-for="Survey.Password" type="password" class="form-control" placeholder="Leave blank for no password" />
+                            </div>
+                            <span asp-validation-for="Survey.Password" class="invalid-feedback d-block"></span>
+                            <div class="form-text">Optionally, restrict access with a password.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-lg mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0 d-flex align-items-center">
+                    <i class="bi bi-patch-question-fill text-primary me-2 fs-4"></i>Survey Questions
+                </h5>
+                <button type="button" class="btn btn-primary btn-sm fw-medium" id="addQuestionBtn">
+                    <i class="bi bi-plus-circle-dotted me-1"></i> Add New Question
+                </button>
+            </div>
+            <div class="card-body p-lg-4" id="questionsContainer">
+                <div class="text-center py-5 rounded-3" id="noQuestionsMessage" style="background-color: var(--bs-tertiary-bg);">
+                    <i class="bi bi-clipboard-plus display-3 text-muted mb-3"></i>
+                    <h4 class="mb-2 fw-normal">Your survey is waiting for questions!</h4>
+                    <p class="text-muted mb-3 col-md-8 col-lg-6 mx-auto">
+                        Click the "Add New Question" button above to start building your survey form.
+                        You'll need at least one question.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center pt-4 border-top mt-5">
+            <a asp-page="List" class="btn btn-outline-secondary rounded-pill px-4 py-2">
+                <i class="bi bi-arrow-left-circle me-1"></i> Cancel & Back to List
+            </a>
+            <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 py-2">
+                <i class="bi bi-cloud-arrow-up-fill me-1"></i> Create Survey
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="question-template d-none">
+    <div class="question-item card mb-3 border-start border-primary border-4 shadow-sm">
+        <div class="card-header bg-light-subtle d-flex justify-content-between align-items-center py-2 px-3">
+            <h6 class="mb-0 fw-semibold text-primary-emphasis d-flex align-items-center">
+                <i class="bi bi-grip-vertical me-2 text-muted question-drag-handle"></i>
+                Question <span class="question-number"></span>
+            </h6>
+            <div class="btn-group btn-group-sm question-actions">
+                <button type="button" class="btn btn-outline-secondary move-up-btn"><i class="bi bi-arrow-up-square"></i></button>
+                <button type="button" class="btn btn-outline-secondary move-down-btn"><i class="bi bi-arrow-down-square"></i></button>
+                <button type="button" class="btn btn-outline-danger remove-question-btn"><i class="bi bi-trash2-fill"></i></button>
+            </div>
+        </div>
+        <div class="card-body p-3">
+            <div class="mb-3">
+                <label class="form-label fw-medium">Question Text <span class="text-danger">*</span></label>
+                <input type="text" class="form-control question-text" required placeholder="E.g., On a scale of 1 to 5, how likely are you to recommend...?" />
+                <div class="invalid-feedback d-block">Question text is essential.</div>
+            </div>
+
+            <div class="row gx-3 mb-3 align-items-end">
+                <div class="col-md-7">
+                    <label class="form-label fw-medium">Question Type</label>
+                    <select class="form-select question-type">
+                        <option value="1">Single Choice (Radio)</option>
+                        <option value="2">Multiple Choice (Checkbox)</option>
+                        <option value="3">Short Text</option>
+                        <option value="4">Rating (e.g., Stars, Scale)</option>
+                        <option value="5">Long Text (Textarea)</option>
+                        <option value="6">Dropdown Select</option>
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-check form-switch mt-3 mt-md-0 float-md-end">
+                        <input type="checkbox" class="form-check-input question-required" checked id="qRequiredPlaceholder" />
+                        <label class="form-check-label fw-medium" for="qRequiredPlaceholder">Required</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="answer-options-container mt-3 pt-3 border-top">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label class="form-label fw-medium mb-0">Answer Options</label>
+                    <button type="button" class="btn btn-sm btn-outline-primary py-1 add-option-btn">
+                        <i class="bi bi-plus-lg me-1"></i> Add Option
+                    </button>
+                </div>
+                <div class="options-list"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="option-template d-none">
+    <div class="input-group input-group-sm mb-2 option-item">
+        <span class="input-group-text option-drag-handle-icon"><i class="bi bi-grip-vertical text-muted"></i></span>
+        <input type="text" class="form-control option-text" placeholder="Enter option text" required />
+        <button type="button" class="btn btn-outline-danger remove-option-btn">
+            <i class="bi bi-x-lg"></i>
+        </button>
+        <div class="invalid-feedback d-block ms-2">Option text is needed.</div>
+    </div>
+</div>

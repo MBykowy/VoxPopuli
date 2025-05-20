@@ -1,0 +1,247 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using VoxPopuli.Data;
+using VoxPopuli.Models.Domain;
+using VoxPopuli.Models.ViewModels.Responses;
+
+namespace VoxPopuli.Controllers
+{
+    public class ResponsesController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IMapper _mapper;
+        private readonly ILogger<ResponsesController> _logger;
+
+        public ResponsesController(
+            ApplicationDbContext context,
+            UserManager<IdentityUser> userManager,
+            IMapper mapper,
+            ILogger<ResponsesController> logger)
+        {
+            _context = context;
+            _userManager = userManager;
+            _mapper = mapper;
+            _logger = logger;
+        }
+
+        // GET: /Responses/Take/{id}
+        [HttpGet]
+        [Route("Responses/Take/{id}")]
+        public async Task<IActionResult> Take(int id, string password = null)
+        {
+            _logger.LogInformation("Attempting to take survey with ID: {SurveyId}", id);
+
+            // Get survey with questions and options
+            var survey = await _context.Surveys
+                .Include(s => s.Questions)
+                .ThenInclude(q => q.AnswerOptions)
+                .FirstOrDefaultAsync(s => s.SurveyId == id);
+
+            if (survey == null)
+            {
+                _logger.LogWarning("Survey with ID {SurveyId} not found", id);
+                return NotFound();
+            }
+
+            // Check if the survey is active and within the date range
+            if (!survey.IsActive)
+            {
+                _logger.LogWarning("Survey with ID {SurveyId} is not active", id);
+                return View("SurveyNotAvailable", "This survey is not currently active.");
+            }
+
+            var now = DateTime.UtcNow;
+            if (survey.StartDate.HasValue && survey.StartDate.Value > now)
+            {
+                _logger.LogWarning("Survey with ID {SurveyId} has not started yet", id);
+                return View("SurveyNotAvailable", $"This survey will be available starting {survey.StartDate.Value.ToString("MMMM dd, yyyy")}.");
+            }
+
+            if (survey.EndDate.HasValue && survey.EndDate.Value < now)
+            {
+                _logger.LogWarning("Survey with ID {SurveyId} has ended", id);
+                return View("SurveyNotAvailable", $"This survey ended on {survey.EndDate.Value.ToString("MMMM dd, yyyy")}.");
+            }
+
+            // Check password if survey is password protected
+            if (!string.IsNullOrEmpty(survey.PasswordHash) && string.IsNullOrEmpty(password))
+            {
+                // Show password prompt
+                return View("PasswordPrompt", id);
+            }
+
+            // Verify password if provided
+            if (!string.IsNullOrEmpty(survey.PasswordHash) && !string.IsNullOrEmpty(password))
+            {
+                // In a real implementation, you'd use a proper password hasher
+                if (password != survey.PasswordHash) // This is simplified; use proper password verification
+                {
+                    ModelState.AddModelError("", "Incorrect password");
+                    return View("PasswordPrompt", id);
+                }
+            }
+
+            // Map survey to view model
+            var viewModel = _mapper.Map<TakeSurveyViewModel>(survey);
+
+            // Order questions by the Order property
+            viewModel.Questions = viewModel.Questions.OrderBy(q => q.Order).ToList();
+
+            return View(viewModel);
+        }
+
+        // POST: /Responses/Take/{id}
+        [HttpPost]
+        [Route("Responses/Take/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Take(int id, SurveySubmissionViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogWarning("Invalid model state when submitting survey {SurveyId}", id);
+                // If there are validation errors, reload the survey for the user to try again
+                return await Take(id);
+            }
+
+            // Get the survey to ensure it exists and is valid
+            var survey = await _context.Surveys
+                .Include(s => s.Questions)
+                .FirstOrDefaultAsync(s => s.SurveyId == id);
+
+            if (survey == null)
+            {
+                _logger.LogWarning("Survey with ID {SurveyId} not found during submission", id);
+                return NotFound();
+            }
+
+            // Check if all required questions have answers
+            var requiredQuestionIds = await _context.Questions
+                .Where(q => q.SurveyId == id && q.IsRequired)
+                .Select(q => q.QuestionId)
+                .ToListAsync();
+
+            foreach (var requiredId in requiredQuestionIds)
+            {
+                var answer = model.Answers.FirstOrDefault(a => a.QuestionId == requiredId);
+                if (answer == null || !answer.HasAnswer())
+                {
+                    _logger.LogWarning("Required question {QuestionId} not answered", requiredId);
+                    ModelState.AddModelError("", "Please answer all required questions.");
+                    return await Take(id);
+                }
+            }
+
+            // Create a new response
+            var response = new Response
+            {
+                SurveyId = id,
+                SubmittedAt = DateTime.UtcNow,
+                IsAnonymous = model.IsAnonymous
+            };
+
+            // Set respondent if not anonymous and user is logged in
+            if (!model.IsAnonymous && User.Identity.IsAuthenticated)
+            {
+                response.RespondentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+            else
+            {
+                // For anonymous responses or when not logged in
+                response.IsAnonymous = true;
+                response.RespondentUserId = "anonymous"; // Handle this appropriately based on your domain model
+            }
+
+            // Create answers for each question
+            response.Answers = new List<Answer>();
+
+            foreach (var answerVM in model.Answers)
+            {
+                var question = await _context.Questions.FindAsync(answerVM.QuestionId);
+                if (question == null) continue;
+
+                switch (question.QuestionType)
+                {
+                    case QuestionType.SingleChoice:
+                        if (answerVM.SelectedOptionId.HasValue)
+                        {
+                            response.Answers.Add(new Answer
+                            {
+                                QuestionId = answerVM.QuestionId,
+                                SelectedOptionId = answerVM.SelectedOptionId,
+                                AnswerText = string.Empty
+                            });
+                        }
+                        break;
+
+                    case QuestionType.MultipleChoice:
+                        foreach (var optionId in answerVM.SelectedOptionIds)
+                        {
+                            response.Answers.Add(new Answer
+                            {
+                                QuestionId = answerVM.QuestionId,
+                                SelectedOptionId = optionId,
+                                AnswerText = string.Empty
+                            });
+                        }
+                        break;
+
+                    case QuestionType.Text:
+                        response.Answers.Add(new Answer
+                        {
+                            QuestionId = answerVM.QuestionId,
+                            AnswerText = answerVM.TextAnswer ?? string.Empty
+                        });
+                        break;
+
+                    case QuestionType.Rating:
+                        if (answerVM.Rating.HasValue)
+                        {
+                            response.Answers.Add(new Answer
+                            {
+                                QuestionId = answerVM.QuestionId,
+                                RatingValue = answerVM.Rating,
+                                AnswerText = string.Empty
+                            });
+                        }
+                        break;
+                }
+            }
+
+            // Save to database
+            _context.Responses.Add(response);
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation("Successfully submitted response {ResponseId} for survey {SurveyId}", response.ResponseId, id);
+
+            // Redirect to thank you page
+            return RedirectToAction(nameof(ThankYou), new { id = response.ResponseId });
+        }
+
+        // GET: /Responses/ThankYou/{id}
+        [HttpGet]
+        public async Task<IActionResult> ThankYou(int id)
+        {
+            var response = await _context.Responses
+                .Include(r => r.Survey)
+                .FirstOrDefaultAsync(r => r.ResponseId == id);
+
+            if (response == null)
+            {
+                return NotFound();
+            }
+
+            return View(response);
+        }
+    }
+}
+

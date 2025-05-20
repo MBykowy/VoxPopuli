@@ -1,0 +1,194 @@
+﻿@page "{id:int}"
+@model VoxPopuli.Pages.Surveys.ResultsModel
+@{
+    ViewData["Title"] = $"Survey Results: {Model.SurveyResult?.Title}";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <h1>Results: @Model.SurveyResult?.Title</h1>
+            <p class="lead">Total responses: @Model.SurveyResult?.ResponseCount</p>
+        </div>
+        <div>
+            <a asp-page="ExportResults" asp-route-id="@Model.Id" class="btn btn-outline-primary me-2">
+                <i class="bi bi-download"></i> Export to CSV
+            </a>
+            <button type="button" class="btn btn-outline-secondary" onclick="window.print();">
+                <i class="bi bi-printer"></i> Print Results
+            </button>
+        </div>
+    </div>
+
+    @if (Model.SurveyResult?.ResponseCount == 0)
+    {
+        <div class="alert alert-info">
+            <h4 class="alert-heading">No responses yet</h4>
+            <p>This survey hasn't received any responses yet. Check back later or share the survey link with more participants.</p>
+        </div>
+    }
+    else if (Model.SurveyResult?.Questions != null)
+    {
+        var orderedQuestions = Model.SurveyResult.Questions.OrderBy(q => q.Order).ToList();
+
+        @foreach (var question in orderedQuestions)
+        {
+            <div class="card mb-4 result-card">
+                <div class="card-header bg-light">
+                    <h3 class="card-title mb-0">@question.QuestionText</h3>
+
+                    @if (question.QuestionType == VoxPopuli.Models.Domain.QuestionType.Rating && question.AverageRating.HasValue)
+                    {
+                        <p class="mb-0 text-muted">Average rating: @question.AverageRating.Value.ToString("F1")/5</p>
+                    }
+                </div>
+                <div class="card-body">
+                    @switch (question.QuestionType)
+                    {
+                        case VoxPopuli.Models.Domain.QuestionType.SingleChoice:
+                        case VoxPopuli.Models.Domain.QuestionType.MultipleChoice:
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="chart-container" style="position: relative; height: 300px;">
+                                        <canvas id="chart@(question.QuestionId)" class="question-chart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Option</th>
+                                                    <th>Count</th>
+                                                    <th>%</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @{
+                                                    var orderedOptions = question.Options.OrderByDescending(o => o.Count).ToList();
+                                                }
+                                                @foreach (var option in orderedOptions)
+                                                {
+                                                    <tr>
+                                                        <td>@option.OptionText</td>
+                                                        <td>@option.Count</td>
+                                                        <td>@option.Percentage%</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            break;
+
+                        case VoxPopuli.Models.Domain.QuestionType.Rating:
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="chart-container" style="position: relative; height: 300px;">
+                                        <canvas id="chart@(question.QuestionId)" class="question-chart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Rating</th>
+                                                    <th>Count</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @for (int i = 5; i >= 1; i--)
+                                                {
+                                                    <tr>
+                                                        <td>@i @(i == 5 ? "(Excellent)" : i == 1 ? "(Poor)" : "")</td>
+                                                        <td>@(question.RatingDistribution.ContainsKey(i) ? question.RatingDistribution[i] : 0)</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            break;
+
+                        case VoxPopuli.Models.Domain.QuestionType.Text:
+                            <div class="text-responses">
+                                @if (question.TextResponses.Any())
+                                {
+                                    <h5 class="mb-3">Responses (@question.TextResponses.Count)</h5>
+                                    <div class="list-group">
+                                        @foreach (var response in question.TextResponses)
+                                        {
+                                            <div class="list-group-item">
+                                                <p class="mb-0">@response</p>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-light">No text responses submitted for this question.</div>
+                                }
+                            </div>
+                            break;
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/js/survey-results-charts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        @{
+            var chartData = Model.SurveyResult?.Questions
+                ?.Where(q => q.ChartData != null)
+                ?.Select(q => new
+                {
+                    id = q.QuestionId.ToString(),
+                    type = q.ChartData.ChartType,
+                    labels = q.ChartData.Labels,
+                    data = q.ChartData.Data,
+                    backgroundColor = q.ChartData.BackgroundColors,
+                    borderColor = q.ChartData.BorderColors,
+                    title = q.ChartData.Title
+                })
+                ?.ToList() ?? Enumerable.Empty<object>().Select(_ => new
+                {
+                    id = string.Empty,
+                    type = string.Empty,
+                    labels = new List<string>(),
+                    data = new List<int>(),
+                    backgroundColor = new List<string>(),
+                    borderColor = new List<string>(),
+                    title = string.Empty
+                }).ToList();
+
+        }
+
+            const charts = @Html.Raw(Json.Serialize(chartData));
+
+            if (charts && charts.length > 0) {
+                charts.forEach(chartData => {
+                    const ctx = document.getElementById('chart' + chartData.id);
+                    if (ctx) {
+                        createChart(
+                            ctx.getContext('2d'),
+                            chartData.type,
+                            chartData.labels,
+                            chartData.data,
+                            chartData.backgroundColor,
+                            chartData.borderColor,
+                            chartData.title
+                        );
+                    }
+                });
+            }
+        });
+    </script>
+}

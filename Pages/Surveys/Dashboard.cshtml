@@ -1,0 +1,299 @@
+﻿@page
+@model VoxPopuli.Pages.Surveys.DashboardModel
+@{
+    ViewData["Title"] = "Analytics Dashboard";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        <strong><i class="bi bi-check-circle-fill me-2"></i>Success!</strong> @TempData["SuccessMessage"]
+        @if (TempData["NewSurveyId"] != null)
+        {
+            <div class="mt-2">
+                <a href="@Url.Page("Edit", new { id = TempData["NewSurveyId"] })" class="btn btn-sm btn-outline-success me-2">
+                    <i class="bi bi-pencil"></i> Edit Survey
+                </a>
+                <a href="@Url.Page("/Responses/Take", new { id = TempData["NewSurveyId"] })" class="btn btn-sm btn-outline-primary" target="_blank">
+                    <i class="bi bi-eye"></i> View Survey
+                </a>
+            </div>
+        }
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <h1>Survey Analytics Dashboard</h1>
+            <p class="lead">Overview of all survey activities and responses</p>
+        </div>
+        <div>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-primary" id="viewWeekly">Weekly View</button>
+                <button type="button" class="btn btn-outline-primary" id="viewMonthly">Monthly View</button>
+                <button type="button" class="btn btn-outline-primary" id="viewYearly">Yearly View</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <!-- Summary Cards -->
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total Surveys</h5>
+                    <p class="card-text display-5">@Model.TotalSurveys</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total Responses</h5>
+                    <p class="card-text display-5">@Model.TotalResponses</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Avg. Response Rate</h5>
+                    <p class="card-text display-5">@Model.AvgResponseRate%</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Active Surveys</h5>
+                    <p class="card-text display-5">@Model.ActiveSurveys</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <!-- Response Trends Chart -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Response Trends</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="responseTrends" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        <!-- Top Performing Surveys -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Top Performing Surveys</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="topSurveys" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <!-- Response Distribution by Category -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Response Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="responseDistribution" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        <!-- Sentiment Analysis -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Response Sentiment Analysis</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="sentimentAnalysis" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Recent Activity -->
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Recent Activity</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Survey</th>
+                                    <th>Activity</th>
+                                    <th>Date</th>
+                                    <th>User</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var activity in Model.RecentActivities)
+                                {
+                                    <tr>
+                                        <td>@activity.SurveyTitle</td>
+                                        <td>@activity.ActivityType</td>
+                                        <td>@activity.Timestamp.ToString("g")</td>
+                                        <td>@activity.Username</td>
+                                        <td>
+                                            <a href="@activity.ActionLink" class="btn btn-sm btn-outline-primary">View</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Response Trends Chart
+            const trendCtx = document.getElementById('responseTrends').getContext('2d');
+            new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(Model.TrendLabels)),
+                    datasets: [{
+                        label: 'Responses',
+                        data: @Html.Raw(Json.Serialize(Model.TrendData)),
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // Top Performing Surveys
+            const topCtx = document.getElementById('topSurveys').getContext('2d');
+            new Chart(topCtx, {
+                type: 'bar',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(Model.TopSurveyLabels)),
+                    datasets: [{
+                        label: 'Response Count',
+                        data: @Html.Raw(Json.Serialize(Model.TopSurveyData)),
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.6)',
+                            'rgba(54, 162, 235, 0.6)',
+                            'rgba(255, 206, 86, 0.6)',
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(153, 102, 255, 0.6)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // Response Distribution Chart
+            const distCtx = document.getElementById('responseDistribution').getContext('2d');
+            new Chart(distCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(Model.DistributionLabels)),
+                    datasets: [{
+                        label: 'Responses by Type',
+                        data: @Html.Raw(Json.Serialize(Model.DistributionData)),
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.6)',
+                            'rgba(54, 162, 235, 0.6)',
+                            'rgba(255, 206, 86, 0.6)',
+                            'rgba(75, 192, 192, 0.6)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // Sentiment Analysis Chart
+            const sentimentCtx = document.getElementById('sentimentAnalysis').getContext('2d');
+            new Chart(sentimentCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Positive', 'Neutral', 'Negative', 'Mixed', 'Confused'],
+                    datasets: [{
+                        label: 'Current Month',
+                        data: @Html.Raw(Json.Serialize(Model.SentimentCurrentData)),
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Previous Month',
+                        data: @Html.Raw(Json.Serialize(Model.SentimentPreviousData)),
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Toggle between time periods
+            document.getElementById('viewWeekly').addEventListener('click', function() {
+                window.location.href = '?period=weekly';
+            });
+
+            document.getElementById('viewMonthly').addEventListener('click', function() {
+                window.location.href = '?period=monthly';
+            });
+
+            document.getElementById('viewYearly').addEventListener('click', function() {
+                window.location.href = '?period=yearly';
+            });
+        });
+    </script>
+}

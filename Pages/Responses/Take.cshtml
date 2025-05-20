@@ -1,0 +1,161 @@
+﻿@model VoxPopuli.Models.ViewModels.Responses.TakeSurveyViewModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <h1 class="mb-3">@Model.Title</h1>
+            <p class="lead mb-4">@Model.Description</p>
+
+            <form id="surveyForm" method="post" asp-action="Take" asp-route-id="@Model.SurveyId">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                @for (int i = 0; i < Model.Questions.Count; i++)
+                {
+                    var question = Model.Questions[i];
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h4 class="mb-0">
+                                @question.QuestionText
+                                @if (question.IsRequired)
+                                {
+                                    <span class="text-danger">*</span>
+                                }
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <input type="hidden" name="Answers[@i].QuestionId" value="@question.QuestionId" />
+                            <input type="hidden" name="Answers[@i].QuestionType" value="@((int)question.QuestionType)" />
+                            <input type="hidden" name="Answers[@i].IsRequired" value="@question.IsRequired.ToString()" />
+
+                            @switch (question.QuestionType)
+                            {
+                                case VoxPopuli.Models.Domain.QuestionType.SingleChoice:
+                                    @for (int j = 0; j < question.Options.Count; j++)
+                                    {
+                                        var option = question.Options[j];
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="radio"
+                                                   name="Answers[@i].SelectedOptionId"
+                                                   id="q@(question.QuestionId)_option@(option.AnswerOptionId)"
+                                                   value="@option.AnswerOptionId"
+                                            @(question.IsRequired ? "required" : "") />
+                                            <label class="form-check-label" for="q@(question.QuestionId)_option@(option.AnswerOptionId)">
+                                                @option.OptionText
+                                            </label>
+                                        </div>
+                                    }
+                                    break;
+
+                                case VoxPopuli.Models.Domain.QuestionType.MultipleChoice:
+                                    @for (int j = 0; j < question.Options.Count; j++)
+                                    {
+                                        var option = question.Options[j];
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input multiple-choice"
+                                                   type="checkbox"
+                                                   name="Answers[@i].SelectedOptionIds"
+                                                   id="q@(question.QuestionId)_option@(option.AnswerOptionId)"
+                                                   value="@option.AnswerOptionId"
+                                                   data-question-id="@question.QuestionId"
+                                                   data-required="@question.IsRequired" />
+                                            <label class="form-check-label" for="q@(question.QuestionId)_option@(option.AnswerOptionId)">
+                                                @option.OptionText
+                                            </label>
+                                        </div>
+                                    }
+                                    break;
+
+                                case VoxPopuli.Models.Domain.QuestionType.Text:
+                                    <textarea class="form-control"
+                                              name="Answers[@i].TextAnswer"
+                                              id="q@(question.QuestionId)_text"
+                                              rows="3"
+                                    @(question.IsRequired ? "required" : "")></textarea>
+                                    break;
+
+                                case VoxPopuli.Models.Domain.QuestionType.Rating:
+                                    <div class="rating-container d-flex flex-row justify-content-between my-3">
+                                        @for (int rating = 1; rating <= 5; rating++)
+                                        {
+                                            <div class="text-center mx-2" style="width: 60px;">
+                                                <input type="radio"
+                                                       class="btn-check"
+                                                       name="Answers[@i].Rating"
+                                                       id="q@(question.QuestionId)_rating@(rating)"
+                                                       value="@rating"
+                                                       autocomplete="off"
+                                                @(question.IsRequired ? "required" : "") />
+                                                <label class="btn btn-outline-primary d-block" for="q@(question.QuestionId)_rating@(rating)">
+                                                    @rating
+                                                </label>
+                                                @if (rating == 1)
+                                                {
+                                                    <small class="text-muted">Poor</small>
+                                                }
+                                                else if (rating == 5)
+                                                {
+                                                    <small class="text-muted">Excellent</small>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                    break;
+                            }
+                        </div>
+                    </div>
+                }
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" asp-for="IsAnonymous" id="isAnonymous" />
+                            <label class="form-check-label" for="isAnonymous">
+                                Submit anonymously
+                            </label>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Submit Response</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Form validation for required multiple choice questions
+            const form = document.getElementById('surveyForm');
+            form.addEventListener('submit', function(event) {
+                const requiredMultipleChoiceGroups = document.querySelectorAll('.multiple-choice[data-required="True"]');
+
+                // Group checkboxes by question ID
+                const questionGroups = {};
+                requiredMultipleChoiceGroups.forEach(checkbox => {
+                    const questionId = checkbox.getAttribute('data-question-id');
+                    if (!questionGroups[questionId]) {
+                        questionGroups[questionId] = [];
+                    }
+                    questionGroups[questionId].push(checkbox);
+                });
+
+                // Check if at least one checkbox is selected in each required question group
+                for (const questionId in questionGroups) {
+                    const isChecked = questionGroups[questionId].some(cb => cb.checked);
+                    if (!isChecked) {
+                        event.preventDefault();
+                        alert('Please select at least one option for all required questions.');
+                        break;
+                    }
+                }
+            });
+        });
+    </script>
+}
+
