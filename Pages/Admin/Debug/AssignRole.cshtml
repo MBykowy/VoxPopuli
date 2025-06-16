@@ -1,0 +1,71 @@
+﻿@page
+@model VoxPopuli.Pages.Admin.Debug.AssignRoleModel
+@{
+    ViewData["Title"] = "Debug Role Assignment";
+}
+
+@if (!Model.IsDevelopment)
+{
+    <div class="alert alert-danger">
+        <strong>Error:</strong> This page is only available in Development environment.
+    </div>
+    return;
+}
+
+<div class="container">
+    <h1 class="mb-4">
+        <i class="bi bi-shield"></i> Debug Role Assignment
+    </h1>
+
+    <div class="alert alert-warning">
+        <strong>Development Only!</strong> This page is for development debugging purposes only.
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div class="alert alert-info alert-dismissible fade show">
+            <i class="bi bi-info-circle me-2"></i>@Model.StatusMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Assign Roles to User</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">User Email</label>
+                    <input asp-for="Email" class="form-control" placeholder="Enter user's email address">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Select Roles to Assign:</label>
+                    <div class="border rounded p-3">
+                        @for (int i = 0; i < Model.AvailableRoles.Count; i++)
+                        {
+                            <div class="form-check mb-2">
+                                <input type="hidden" asp-for="@Model.AvailableRoles[i].Name" />
+                                <input class="form-check-input" type="checkbox" asp-for="@Model.AvailableRoles[i].IsSelected"
+                                       id="role-@i">
+                                <label class="form-check-label" for="role-@i">
+                                    @Model.AvailableRoles[i].Name
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle me-2"></i>Assign Roles
+                    </button>
+                    <a asp-page="/Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Home
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,41 +1,32 @@
-﻿@page "{id:int?}"
+﻿@page
 @model VoxPopuli.Pages.Responses.ThankYouModel
 @{
-    ViewData["Title"] = "Thank You";
+    ViewData["Title"] = "Thank You for Your Response";
 }
 
 <div class="container py-5">
-    <div class="row">
-        <div class="col-md-8 offset-md-2 text-center">
-            <div class="card">
-                <div class="card-body">
-                    <h1 class="display-4 text-success mb-4">Thank You!</h1>
-                    <div class="mb-4">
-                        <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
-                    </div>
-                    @if (Model.Response?.Survey != null)
-                    {
-                            <p class="lead">Your response to <strong>@Model.Response.Survey.Title</strong> has been submitted successfully.</p>
-                    }
-                    else
-                    {
-                            <p class="lead">Your response has been submitted successfully.</p>
-                    }
+    <div class="text-center">
+        <div class="mb-4">
+            <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+        </div>
 
-                    @if (Model.Response?.IsAnonymous == false && User?.Identity?.IsAuthenticated == true)
-                    {
-                            <p>We appreciate your feedback!</p>
-                    }
-                    else
-                    {
-                            <p>Your response has been recorded anonymously.</p>
-                    }
+        <h1 class="display-5 mb-3">Thank You!</h1>
 
-                    <div class="mt-4">
-                        <a asp-page="/Index" class="btn btn-primary">Return to Home</a>
-                    </div>
-                </div>
-            </div>
+        <p class="lead mb-4">
+            Your response to "@(Model.Survey?.Title ?? "the survey")" has been submitted successfully.
+        </p>
+
+        <div class="mt-5">
+            <a asp-page="/Index" class="btn btn-primary me-3">
+                <i class="bi bi-house-door me-2"></i>Return to Home
+            </a>
+
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-page="/Surveys/List" class="btn btn-outline-secondary">
+                    <i class="bi bi-list-check me-2"></i>View My Surveys
+                </a>
+            }
         </div>
     </div>
 </div>
