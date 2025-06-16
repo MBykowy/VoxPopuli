@@ -1,26 +1,32 @@
-﻿// Models/ViewModels/Responses/TakeSurveyViewModel.cs
+﻿using System.Collections.Generic;
+using VoxPopuli.Models.Domain;
+
 namespace VoxPopuli.Models.ViewModels.Responses
 {
     public class TakeSurveyViewModel
     {
-        public TakeSurveyViewModel()
-        {
-            Title = string.Empty;
-            Description = string.Empty;
-            Questions = new List<VoxPopuli.Models.ViewModels.Questions.QuestionViewModel>();
-        }
-
         public int SurveyId { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        // Change init to set
-        public List<VoxPopuli.Models.ViewModels.Questions.QuestionViewModel> Questions { get; set; }
-        public bool IsAnonymous { get; set; }
-        public string? Password { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public bool IsPasswordProtected { get; set; }
         public bool HasStarted { get; set; }
         public bool HasEnded { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
+        public bool IsAnonymous { get; set; }
+        public List<QuestionViewModel> Questions { get; set; } = new List<QuestionViewModel>();
+    }
+
+    public class QuestionViewModel
+    {
+        public int QuestionId { get; set; }
+        public string QuestionText { get; set; } = string.Empty;
+        public QuestionType QuestionType { get; set; }
+        public bool IsRequired { get; set; }
+        public List<AnswerOptionViewModel> Options { get; set; } = new List<AnswerOptionViewModel>();
+    }
+
+    public class AnswerOptionViewModel
+    {
+        public int AnswerOptionId { get; set; }
+        public string OptionText { get; set; } = string.Empty;
     }
 }

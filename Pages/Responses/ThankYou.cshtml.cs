@@ -19,18 +19,31 @@ namespace VoxPopuli.Pages.Responses
         [BindProperty(SupportsGet = true)]
         public int Id { get; set; }
 
+        public Response? Response { get; set; }
         public Survey? Survey { get; set; }
+        public bool IsAnonymous { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
+            if (Id <= 0)
+            {
+                return NotFound();
+            }
+
+            // Retrieve the response with careful null handling
             var response = await _context.Responses
                 .Include(r => r.Survey)
                 .FirstOrDefaultAsync(r => r.ResponseId == Id);
 
             if (response == null)
-                return RedirectToPage("/Index");
+            {
+                return NotFound();
+            }
 
+            Response = response;
             Survey = response.Survey;
+            IsAnonymous = response.IsAnonymous;
+
             return Page();
         }
     }

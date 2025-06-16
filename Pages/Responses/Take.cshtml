@@ -1,20 +1,23 @@
-﻿@model VoxPopuli.Models.ViewModels.Responses.TakeSurveyViewModel
+﻿@page
+@model VoxPopuli.Pages.Responses.TakeModel
 @{
-    ViewData["Title"] = Model.Title;
+    ViewData["Title"] = Model.Survey.Title;
 }
 
 <div class="container py-4">
     <div class="row">
         <div class="col-md-10 offset-md-1">
-            <h1 class="mb-3">@Model.Title</h1>
-            <p class="lead mb-4">@Model.Description</p>
+            <h1 class="mb-3">@Model.Survey.Title</h1>
+            <p class="lead mb-4">@Model.Survey.Description</p>
 
-            <form id="surveyForm" method="post" asp-action="Take" asp-route-id="@Model.SurveyId">
+            <form id="surveyForm" method="post">
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-                @for (int i = 0; i < Model.Questions.Count; i++)
+                <input type="hidden" asp-for="Submission.SurveyId" value="@Model.Survey.SurveyId" />
+
+                @for (int i = 0; i < Model.Survey.Questions.Count; i++)
                 {
-                    var question = Model.Questions[i];
+                    var question = Model.Survey.Questions[i];
                     <div class="card mb-4">
                         <div class="card-header bg-light">
                             <h4 class="mb-0">
@@ -26,54 +29,66 @@
                             </h4>
                         </div>
                         <div class="card-body">
-                            <input type="hidden" name="Answers[@i].QuestionId" value="@question.QuestionId" />
-                            <input type="hidden" name="Answers[@i].QuestionType" value="@((int)question.QuestionType)" />
-                            <input type="hidden" name="Answers[@i].IsRequired" value="@question.IsRequired.ToString()" />
+                            <input type="hidden" name="Submission.Answers[@i].QuestionId" value="@question.QuestionId" />
+                            <input type="hidden" name="Submission.Answers[@i].QuestionType" value="@((int)question.QuestionType)" />
+                            <input type="hidden" name="Submission.Answers[@i].IsRequired" value="@question.IsRequired.ToString()" />
 
                             @switch (question.QuestionType)
                             {
                                 case VoxPopuli.Models.Domain.QuestionType.SingleChoice:
-                                    @for (int j = 0; j < question.Options.Count; j++)
+                                    @if (question.Options != null && question.Options.Any())
                                     {
-                                        var option = question.Options[j];
-                                        <div class="form-check mb-2">
-                                            <input class="form-check-input" type="radio"
-                                                   name="Answers[@i].SelectedOptionId"
-                                                   id="q@(question.QuestionId)_option@(option.AnswerOptionId)"
-                                                   value="@option.AnswerOptionId"
-                                            @(question.IsRequired ? "required" : "") />
-                                            <label class="form-check-label" for="q@(question.QuestionId)_option@(option.AnswerOptionId)">
-                                                @option.OptionText
-                                            </label>
-                                        </div>
+                                        @foreach (var option in question.Options)
+                                        {
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="radio"
+                                                       name="Submission.Answers[@i].SelectedOptionId"
+                                                       id="q@(question.QuestionId)_option@(option.AnswerOptionId)"
+                                                       value="@option.AnswerOptionId"
+                                                       @(question.IsRequired ? "required" : "") />
+                                                <label class="form-check-label" for="q@(question.QuestionId)_option@(option.AnswerOptionId)">
+                                                    @option.OptionText
+                                                </label>
+                                            </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <div class="alert alert-warning">No options available for this question.</div>
                                     }
                                     break;
 
                                 case VoxPopuli.Models.Domain.QuestionType.MultipleChoice:
-                                    @for (int j = 0; j < question.Options.Count; j++)
+                                    @if (question.Options != null && question.Options.Any())
                                     {
-                                        var option = question.Options[j];
-                                        <div class="form-check mb-2">
-                                            <input class="form-check-input multiple-choice"
-                                                   type="checkbox"
-                                                   name="Answers[@i].SelectedOptionIds"
-                                                   id="q@(question.QuestionId)_option@(option.AnswerOptionId)"
-                                                   value="@option.AnswerOptionId"
-                                                   data-question-id="@question.QuestionId"
-                                                   data-required="@question.IsRequired" />
-                                            <label class="form-check-label" for="q@(question.QuestionId)_option@(option.AnswerOptionId)">
-                                                @option.OptionText
-                                            </label>
-                                        </div>
+                                        @foreach (var option in question.Options)
+                                        {
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input multiple-choice"
+                                                       type="checkbox"
+                                                       name="Submission.Answers[@i].SelectedOptionIds"
+                                                       id="q@(question.QuestionId)_option@(option.AnswerOptionId)"
+                                                       value="@option.AnswerOptionId"
+                                                       data-question-id="@question.QuestionId"
+                                                       data-required="@question.IsRequired" />
+                                                <label class="form-check-label" for="q@(question.QuestionId)_option@(option.AnswerOptionId)">
+                                                    @option.OptionText
+                                                </label>
+                                            </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <div class="alert alert-warning">No options available for this question.</div>
                                     }
                                     break;
 
                                 case VoxPopuli.Models.Domain.QuestionType.Text:
                                     <textarea class="form-control"
-                                              name="Answers[@i].TextAnswer"
-                                              id="q@(question.QuestionId)_text"
-                                              rows="3"
-                                    @(question.IsRequired ? "required" : "")></textarea>
+                                  name="Submission.Answers[@i].TextAnswer"
+                                  id="q@(question.QuestionId)_text"
+                                  rows="3"
+                                  @(question.IsRequired ? "required" : "")></textarea>
                                     break;
 
                                 case VoxPopuli.Models.Domain.QuestionType.Rating:
@@ -83,11 +98,11 @@
                                             <div class="text-center mx-2" style="width: 60px;">
                                                 <input type="radio"
                                                        class="btn-check"
-                                                       name="Answers[@i].Rating"
+                                                       name="Submission.Answers[@i].Rating"
                                                        id="q@(question.QuestionId)_rating@(rating)"
                                                        value="@rating"
                                                        autocomplete="off"
-                                                @(question.IsRequired ? "required" : "") />
+                                                       @(question.IsRequired ? "required" : "") />
                                                 <label class="btn btn-outline-primary d-block" for="q@(question.QuestionId)_rating@(rating)">
                                                     @rating
                                                 </label>
@@ -111,7 +126,7 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" asp-for="IsAnonymous" id="isAnonymous" />
+                            <input class="form-check-input" type="checkbox" asp-for="Submission.IsAnonymous" id="isAnonymous" />
                             <label class="form-check-label" for="isAnonymous">
                                 Submit anonymously
                             </label>

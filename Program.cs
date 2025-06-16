@@ -107,23 +107,24 @@ app.MapRazorPages();
 app.Run();
 
 // Custom interfaces for mapping operations
+// Custom interfaces for mapping operations
 public interface ISurveyMapper
 {
     TakeSurveyViewModel MapToTakeSurveyViewModel(Survey survey);
     SurveyResultViewModel MapToSurveyResultViewModel(Survey survey);
     SurveyDetailsViewModel MapToDetailsViewModel(Survey survey);
     SurveyListItemViewModel MapToListItemViewModel(Survey survey);
-    QuestionViewModel MapToViewModel(Question question);
+    VoxPopuli.Models.ViewModels.Questions.QuestionViewModel MapToViewModel(Question question);
     Survey MapToEntity(SurveyCreateViewModel viewModel);
     Survey MapToEntity(SurveyEditViewModel viewModel);
-    Question MapToEntity(QuestionViewModel viewModel);
+    Question MapToEntity(VoxPopuli.Models.ViewModels.Questions.QuestionViewModel viewModel);
 }
-
 public interface IResponseMapper
 {
     VoxPopuli.Mappings.ResponseViewModel MapToViewModel(Response response);
 }
 
+// Implementation of the survey mapper
 // Implementation of the survey mapper
 public class SurveyMapper : ISurveyMapper
 {
@@ -143,16 +144,33 @@ public class SurveyMapper : ISurveyMapper
 
         if (survey.Questions != null)
         {
+            // Convert from Questions namespace to Responses namespace
             viewModel.Questions = survey.Questions
                 .OrderBy(q => q.Order)
-                .Select(q => MapToViewModel(q))
+                .Select(q => new VoxPopuli.Models.ViewModels.Responses.QuestionViewModel
+                {
+                    QuestionId = q.QuestionId,
+                    QuestionText = q.QuestionText,
+                    QuestionType = q.QuestionType,
+                    IsRequired = q.IsRequired,
+                    Options = q.AnswerOptions
+                        .OrderBy(o => o.Order)
+                        .Select(ao => new VoxPopuli.Models.ViewModels.Responses.AnswerOptionViewModel
+                        {
+                            AnswerOptionId = ao.AnswerOptionId,
+                            OptionText = ao.OptionText
+                        })
+                        .ToList()
+                })
                 .ToList();
         }
 
         return viewModel;
     }
 
-    public SurveyResultViewModel MapToSurveyResultViewModel(Survey survey)
+    // Rest of the class remains the same...
+
+public SurveyResultViewModel MapToSurveyResultViewModel(Survey survey)
     {
         if (survey == null) return null;
 
@@ -180,7 +198,8 @@ public class SurveyMapper : ISurveyMapper
             EndDate = survey.EndDate,
             IsPasswordProtected = !string.IsNullOrEmpty(survey.PasswordHash),
             ResponseCount = survey.Responses?.Count ?? 0,
-            Questions = survey.Questions?.Select(q => MapToViewModel(q)).ToList() ?? new List<QuestionViewModel>()
+            Questions = survey.Questions?.Select(q => this.MapToViewModel(q)).ToList() ??
+                new List<VoxPopuli.Models.ViewModels.Questions.QuestionViewModel>()
         };
     }
 
@@ -199,11 +218,11 @@ public class SurveyMapper : ISurveyMapper
         };
     }
 
-    public QuestionViewModel MapToViewModel(Question question)
+    public VoxPopuli.Models.ViewModels.Questions.QuestionViewModel MapToViewModel(Question question)
     {
         if (question == null) return null;
 
-        var viewModel = new QuestionViewModel
+        var viewModel = new VoxPopuli.Models.ViewModels.Questions.QuestionViewModel
         {
             QuestionId = question.QuestionId,
             QuestionText = question.QuestionText,
@@ -216,7 +235,7 @@ public class SurveyMapper : ISurveyMapper
         {
             viewModel.Options = question.AnswerOptions
                 .OrderBy(o => o.Order)
-                .Select(ao => new AnswerOptionViewModel
+                .Select(ao => new VoxPopuli.Models.ViewModels.Questions.AnswerOptionViewModel
                 {
                     AnswerOptionId = ao.AnswerOptionId,
                     OptionText = ao.OptionText,
@@ -245,7 +264,7 @@ public class SurveyMapper : ISurveyMapper
         if (viewModel.Questions != null)
         {
             survey.Questions = viewModel.Questions
-                .Select(q => MapToEntity(q))
+                .Select(q => this.MapToEntity(q))
                 .ToList();
         }
 
@@ -270,14 +289,14 @@ public class SurveyMapper : ISurveyMapper
         if (viewModel.Questions != null)
         {
             survey.Questions = viewModel.Questions
-                .Select(q => MapToEntity(q))
+                .Select(q => this.MapToEntity(q))
                 .ToList();
         }
 
         return survey;
     }
 
-    public Question MapToEntity(QuestionViewModel viewModel)
+    public Question MapToEntity(VoxPopuli.Models.ViewModels.Questions.QuestionViewModel viewModel)
     {
         if (viewModel == null) return null;
 
@@ -379,9 +398,9 @@ public class AutoMapperCompatibilityAdapter : AutoMapper.IMapper
         // Survey -> SurveyListItemViewModel
         if (source is Survey surveySL && typeof(TDestination) == typeof(SurveyListItemViewModel))
             return (TDestination)(object)_surveyMapper.MapToListItemViewModel(surveySL);
-
+       
         // Question -> QuestionViewModel
-        if (source is Question question && typeof(TDestination) == typeof(QuestionViewModel))
+        if (source is Question question && typeof(TDestination) == typeof(VoxPopuli.Models.ViewModels.Questions.QuestionViewModel))
             return (TDestination)(object)_surveyMapper.MapToViewModel(question);
 
         // Response -> ResponseViewModel
@@ -396,8 +415,9 @@ public class AutoMapperCompatibilityAdapter : AutoMapper.IMapper
         if (source is SurveyEditViewModel editVM && typeof(TDestination) == typeof(Survey))
             return (TDestination)(object)_surveyMapper.MapToEntity(editVM);
 
+
         // QuestionViewModel -> Question
-        if (source is QuestionViewModel questionVM && typeof(TDestination) == typeof(Question))
+        if (source is VoxPopuli.Models.ViewModels.Questions.QuestionViewModel questionVM && typeof(TDestination) == typeof(Question))
             return (TDestination)(object)_surveyMapper.MapToEntity(questionVM);
 
         // Default: try to create an instance of the destination type

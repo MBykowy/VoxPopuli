@@ -44,7 +44,9 @@ namespace VoxPopuli.Data
                 .HasMany(r => r.Answers)
                 .WithOne(a => a.Response)
                 .HasForeignKey(a => a.ResponseId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false); // Make relationship optional
+            ;
 
             modelBuilder.Entity<Answer>()
                 .HasOne(a => a.Question)

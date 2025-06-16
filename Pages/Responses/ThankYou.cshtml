@@ -1,32 +1,43 @@
 ﻿@page
 @model VoxPopuli.Pages.Responses.ThankYouModel
 @{
-    ViewData["Title"] = "Thank You for Your Response";
+    ViewData["Title"] = "Thank You";
 }
 
 <div class="container py-5">
-    <div class="text-center">
-        <div class="mb-4">
-            <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
-        </div>
+    <div class="card shadow-lg border-0 rounded-lg p-4 text-center">
+        <div class="card-body">
+            <i class="bi bi-check-circle-fill text-success display-1 mb-4"></i>
+            <h1 class="card-title mb-4">Thank You!</h1>
 
-        <h1 class="display-5 mb-3">Thank You!</h1>
-
-        <p class="lead mb-4">
-            Your response to "@(Model.Survey?.Title ?? "the survey")" has been submitted successfully.
-        </p>
-
-        <div class="mt-5">
-            <a asp-page="/Index" class="btn btn-primary me-3">
-                <i class="bi bi-house-door me-2"></i>Return to Home
-            </a>
-
-            @if (User.Identity?.IsAuthenticated == true)
+            @if (Model.Survey != null)
             {
-                <a asp-page="/Surveys/List" class="btn btn-outline-secondary">
-                    <i class="bi bi-list-check me-2"></i>View My Surveys
-                </a>
+                <h2 class="card-subtitle mb-3 text-muted">
+                    Your response to "@Model.Survey.Title" has been recorded.
+                </h2>
             }
+            else
+            {
+                <h2 class="card-subtitle mb-3 text-muted">
+                    Your response has been recorded.
+                </h2>
+            }
+
+            <p class="card-text mb-4">
+                @if (Model.IsAnonymous)
+                {
+                    <span class="badge bg-secondary me-2">
+                        <i class="bi bi-shield-lock me-1"></i> Anonymous
+                    </span>
+                }
+                Submitted: @Model.Response?.SubmittedAt.ToString("MMMM d, yyyy h:mm tt")
+            </p>
+
+            <div class="d-grid gap-2 col-md-6 mx-auto">
+                <a asp-page="/Index" class="btn btn-primary btn-lg">
+                    <i class="bi bi-house-door me-2"></i> Return to Home
+                </a>
+            </div>
         </div>
     </div>
 </div>

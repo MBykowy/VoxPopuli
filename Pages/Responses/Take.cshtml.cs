@@ -1,35 +1,36 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using VoxPopuli.Data;
-using VoxPopuli.Models.ViewModels.Responses;
 using VoxPopuli.Models.Domain;
-using AutoMapper;
+using VoxPopuli.Models.ViewModels.Responses;
+using QuestionViewModels = VoxPopuli.Models.ViewModels.Questions;
+// Use alias to distinguish between the two namespaces
+using ResponseViewModels = VoxPopuli.Models.ViewModels.Responses;
 
 namespace VoxPopuli.Pages.Responses
 {
     public class TakeModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly IMapper _mapper;
 
-        public TakeModel(ApplicationDbContext context, IMapper mapper)
+        public TakeModel(ApplicationDbContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
 
         [BindProperty(SupportsGet = true)]
         public int Id { get; set; }
 
         [BindProperty]
-        public TakeSurveyViewModel Survey { get; set; } = default!;
+        public TakeSurveyViewModel Survey { get; set; } = new TakeSurveyViewModel();
 
         [BindProperty]
-        public SurveySubmissionViewModel Submission { get; set; } = new();
+        public SurveySubmissionViewModel Submission { get; set; } = new SurveySubmissionViewModel();
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -54,15 +55,37 @@ namespace VoxPopuli.Pages.Responses
             if (!string.IsNullOrEmpty(survey.PasswordHash))
                 return RedirectToPage("PasswordPrompt", new { id = Id });
 
-            Survey = _mapper.Map<TakeSurveyViewModel>(survey);
+            // Map database entity to view model
+            Survey = new TakeSurveyViewModel
+            {
+                SurveyId = survey.SurveyId,
+                Title = survey.Title,
+                Description = survey.Description,
+                Questions = survey.Questions.OrderBy(q => q.Order).Select(q => new ResponseViewModels.QuestionViewModel
+                {
+                    QuestionId = q.QuestionId,
+                    QuestionText = q.QuestionText,
+                    QuestionType = q.QuestionType,
+                    IsRequired = q.IsRequired,
+                    Options = q.AnswerOptions.OrderBy(o => o.Order).Select(o => new ResponseViewModels.AnswerOptionViewModel
+                    {
+                        AnswerOptionId = o.AnswerOptionId,
+                        OptionText = o.OptionText
+                    }).ToList()
+                }).ToList()
+            };
+
             Submission.SurveyId = Id;
             return Page();
         }
+
+        // Rest of the code remains the same...
 
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
+                // Re-load the survey for display
                 await OnGetAsync();
                 return Page();
             }
@@ -87,35 +110,88 @@ namespace VoxPopuli.Pages.Responses
                 }
             }
 
-            // Save response
-            var response = new Response
+            try
             {
-                SurveyId = Submission.SurveyId,
-                SubmittedAt = DateTime.UtcNow,
-                IsAnonymous = Submission.IsAnonymous,
-                RespondentUserId = Submission.IsAnonymous ? "anonymous" : User.Identity?.Name ?? "anonymous",
-                Answers = Submission.Answers.SelectMany(a =>
+                // For anonymous responses or when AllowAnonymous is true
+                string? respondentId = null;
+                if (!Submission.IsAnonymous && User.Identity?.IsAuthenticated == true)
                 {
-                    var question = survey.Questions.First(q => q.QuestionId == a.QuestionId);
-                    return question.QuestionType switch
+                    respondentId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                }
+
+                // Save response with possibly null RespondentUserId
+                var response = new Response
+                {
+                    SurveyId = Submission.SurveyId,
+                    SubmittedAt = DateTime.UtcNow,
+                    IsAnonymous = Submission.IsAnonymous,
+                    RespondentUserId = respondentId
+                };
+
+                // Add answers
+                response.Answers = new List<Answer>();
+
+                foreach (var answerSubmission in Submission.Answers)
+                {
+                    var question = survey.Questions.FirstOrDefault(q => q.QuestionId == answerSubmission.QuestionId);
+                    if (question == null) continue;
+
+                    switch (question.QuestionType)
                     {
-                        QuestionType.SingleChoice => a.SelectedOptionId.HasValue
-                            ? new[] { new Answer { QuestionId = a.QuestionId, SelectedOptionId = a.SelectedOptionId } }
-                            : Array.Empty<Answer>(),
-                        QuestionType.MultipleChoice => a.SelectedOptionIds.Select(optId => new Answer { QuestionId = a.QuestionId, SelectedOptionId = optId }),
-                        QuestionType.Text => new[] { new Answer { QuestionId = a.QuestionId, AnswerText = a.TextAnswer ?? "" } },
-                        QuestionType.Rating => a.Rating.HasValue
-                            ? new[] { new Answer { QuestionId = a.QuestionId, RatingValue = a.Rating } }
-                            : Array.Empty<Answer>(),
-                        _ => Array.Empty<Answer>()
-                    };
-                }).ToList()
-            };
+                        case QuestionType.SingleChoice:
+                            if (answerSubmission.SelectedOptionId.HasValue)
+                            {
+                                response.Answers.Add(new Answer
+                                {
+                                    QuestionId = answerSubmission.QuestionId,
+                                    SelectedOptionId = answerSubmission.SelectedOptionId
+                                });
+                            }
+                            break;
 
-            _context.Responses.Add(response);
-            await _context.SaveChangesAsync();
+                        case QuestionType.MultipleChoice:
+                            foreach (var optionId in answerSubmission.SelectedOptionIds)
+                            {
+                                response.Answers.Add(new Answer
+                                {
+                                    QuestionId = answerSubmission.QuestionId,
+                                    SelectedOptionId = optionId
+                                });
+                            }
+                            break;
 
-            return RedirectToPage("ThankYou", new { id = response.ResponseId });
+                        case QuestionType.Text:
+                            response.Answers.Add(new Answer
+                            {
+                                QuestionId = answerSubmission.QuestionId,
+                                AnswerText = answerSubmission.TextAnswer ?? ""
+                            });
+                            break;
+
+                        case QuestionType.Rating:
+                            if (answerSubmission.Rating.HasValue)
+                            {
+                                response.Answers.Add(new Answer
+                                {
+                                    QuestionId = answerSubmission.QuestionId,
+                                    RatingValue = answerSubmission.Rating
+                                });
+                            }
+                            break;
+                    }
+                }
+
+                _context.Responses.Add(response);
+                await _context.SaveChangesAsync();
+
+                return RedirectToPage("ThankYou", new { id = response.ResponseId });
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"An error occurred: {ex.Message}");
+                await OnGetAsync();
+                return Page();
+            }
         }
     }
 }

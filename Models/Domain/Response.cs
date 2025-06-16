@@ -20,8 +20,7 @@ namespace VoxPopuli.Models.Domain
 
         [ForeignKey("SurveyId")]
         public Survey? Survey { get; set; }
-
-        public string RespondentUserId { get; set; }
+        public string? RespondentUserId { get; set; }
 
         [ForeignKey("RespondentUserId")]
         public IdentityUser? Respondent { get; set; }

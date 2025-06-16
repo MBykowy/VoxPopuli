@@ -51,7 +51,6 @@ namespace VoxPopuli.Pages.Surveys
             // Get the current user ID
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Verify the user ID exists in the database
             if (string.IsNullOrEmpty(userId))
             {
                 _logger.LogError("User ID not found in claims");
@@ -70,32 +69,89 @@ namespace VoxPopuli.Pages.Surveys
 
             try
             {
-                // Map to domain model
-                var surveyEntity = _mapper.Map<Survey>(Survey);
 
-                // Set properties that might get lost or overridden during mapping
-                surveyEntity.CreatorUserId = userId;
-                surveyEntity.CreatedAt = DateTime.UtcNow;
-
-                // Log for debugging
-                _logger.LogInformation("Creating survey with Title: {Title}, CreatorUserId: {UserId}",
-                    surveyEntity.Title, surveyEntity.CreatorUserId);
-
-                // If password is provided, hash it
-                if (!string.IsNullOrEmpty(Survey.Password))
+                // Add debugging for questions and options
+                if (Survey.Questions != null)
                 {
-                    surveyEntity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(Survey.Password);
-                }
+                    foreach (var q in Survey.Questions)
+                    {
+                        _logger.LogInformation("Question: {QuestionText}, Type: {QuestionType}, Options Count: {OptionsCount}",
+                            q.QuestionText, q.QuestionType, q.Options?.Count ?? 0);
 
-                // Save to database
+                        if (q.Options != null)
+                        {
+                            foreach (var opt in q.Options)
+                            {
+                                _logger.LogInformation("Option: {OptionText}", opt?.OptionText ?? "NULL");
+                            }
+                        }
+                    }
+                }
+                // Create the survey directly without using AutoMapper
+                var surveyEntity = new Survey
+                {
+                    Title = Survey.Title,
+                    Description = Survey.Description ?? string.Empty,
+                    CreatorUserId = userId,
+                    CreatedAt = DateTime.UtcNow,
+                    StartDate = Survey.StartDate,
+                    EndDate = Survey.EndDate,
+                    IsActive = Survey.IsActive,
+                    AllowAnonymous = Survey.AllowAnonymous,
+                    // Hash password if provided
+                    PasswordHash = !string.IsNullOrEmpty(Survey.Password) ?
+                        BCrypt.Net.BCrypt.HashPassword(Survey.Password) : null
+                };
+
+                // Save the survey first to get its ID
                 _context.Surveys.Add(surveyEntity);
                 await _context.SaveChangesAsync();
+
+                // Now add questions and their options
+                if (Survey.Questions != null && Survey.Questions.Any())
+                {
+                    int questionOrder = 0;
+                    foreach (var questionVM in Survey.Questions)
+                    {
+                        var question = new Question
+                        {
+                            SurveyId = surveyEntity.SurveyId,
+                            QuestionText = questionVM.QuestionText,
+                            QuestionType = questionVM.QuestionType,
+                            IsRequired = questionVM.IsRequired,
+                            Order = questionOrder++
+                        };
+
+                        _context.Questions.Add(question);
+                        // Save to get the QuestionId
+                        await _context.SaveChangesAsync();
+
+                        // Add options for choice-based questions
+                        if ((questionVM.QuestionType == QuestionType.SingleChoice ||
+                             questionVM.QuestionType == QuestionType.MultipleChoice) &&
+                            questionVM.Options != null && questionVM.Options.Any())
+                        {
+                            int optionOrder = 0;
+                            foreach (var optionVM in questionVM.Options)
+                            {
+                                var option = new AnswerOption
+                                {
+                                    QuestionId = question.QuestionId,
+                                    OptionText = optionVM.OptionText, // Change from optionVM.Text to optionVM.OptionText
+                                    Order = optionOrder++
+                                };
+
+                                _context.AnswerOptions.Add(option);
+                            }
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                }
 
                 // Add success message to TempData
                 TempData["SuccessMessage"] = $"Survey '{surveyEntity.Title}' has been created successfully!";
                 TempData["NewSurveyId"] = surveyEntity.SurveyId;
 
-                // Redirect to List instead of Dashboard (which requires Admin/Supervisor roles)
                 return RedirectToPage("List");
             }
             catch (Exception ex)

@@ -3,96 +3,52 @@
   "WorkspaceRootPath": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\pages\\surveys\\create.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:pages\\surveys\\create.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\pages\\surveys\\responses.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:pages\\surveys\\responses.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\pages\\surveys\\responses.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:pages\\surveys\\responses.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\mappings\\surveymappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:mappings\\surveymappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\models\\viewmodels\\surveys\\surveyresponsesviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:models\\viewmodels\\surveys\\surveyresponsesviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\pages\\surveys\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:pages\\surveys\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\pages\\surveys\\dashboard.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:pages\\surveys\\dashboard.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\data\\migrations\\applicationdbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:data\\migrations\\applicationdbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\pages\\surveys\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:pages\\surveys\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\models\\domain\\response.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:models\\domain\\response.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\models\\viewmodels\\questions\\questionviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:models\\viewmodels\\questions\\questionviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\data\\migrations\\20250616195618_allowanonymousresponses.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:data\\migrations\\20250616195618_allowanonymousresponses.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\data\\migrations\\20250616200200_allownullrespondentuserid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:data\\migrations\\20250616200200_allownullrespondentuserid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\pages\\surveys\\list.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:pages\\surveys\\list.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\pages\\responses\\thankyou.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:pages\\responses\\thankyou.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\personalreference.mkd||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:personalreference.mkd||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\pages\\responses\\thankyou.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:pages\\responses\\thankyou.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\personbreference.mkd||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:personbreference.mkd||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\pages\\responses\\take.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:pages\\responses\\take.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\pages\\surveys\\list.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:pages\\surveys\\list.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\areas\\identity\\pages\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:areas\\identity\\pages\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\pages\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:pages\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\pages\\index.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:pages\\index.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\pages\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:pages\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\voxpopuli.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:voxpopuli.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\pages\\index.cshtml||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:pages\\index.cshtml||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\pages\\shared\\error.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:pages\\shared\\error.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\pages\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:pages\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\pages\\_viewimports.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:pages\\_viewimports.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+      "AbsoluteMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|c:\\users\\bykowy\\source\\repos\\voxpopulidev\\pages\\responses\\take.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B91F6C3E-DBC6-4EF4-B5A4-80FA4B2BEBD7}|VoxPopuli.csproj|solutionrelative:pages\\responses\\take.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -102,7 +58,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 25,
+          "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -117,285 +73,173 @@
               "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            }
+          ]
+        },
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Responses.cshtml",
+              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Surveys\\Responses.cshtml",
+              "RelativeDocumentMoniker": "Pages\\Surveys\\Responses.cshtml",
+              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Surveys\\Responses.cshtml*",
+              "RelativeToolTip": "Pages\\Surveys\\Responses.cshtml*",
+              "ViewState": "AgIAAHkAAAAAAAAAAAAgwI4AAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-06-16T20:31:41.177Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Responses.cshtml.cs",
+              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Surveys\\Responses.cshtml.cs",
+              "RelativeDocumentMoniker": "Pages\\Surveys\\Responses.cshtml.cs",
+              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Surveys\\Responses.cshtml.cs",
+              "RelativeToolTip": "Pages\\Surveys\\Responses.cshtml.cs",
+              "ViewState": "AgIAAEEAAAAAAAAAAAAgwFYAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-16T20:31:21.598Z",
+              "EditorCaption": ""
+            },
+            {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "SurveyMappingProfile.cs",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Mappings\\SurveyMappingProfile.cs",
-              "RelativeDocumentMoniker": "Mappings\\SurveyMappingProfile.cs",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Mappings\\SurveyMappingProfile.cs",
-              "RelativeToolTip": "Mappings\\SurveyMappingProfile.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAxwBIAAABFAAAAAAAAAA==",
+              "Title": "SurveyResponsesViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Models\\ViewModels\\Surveys\\SurveyResponsesViewModel.cs",
+              "RelativeDocumentMoniker": "Models\\ViewModels\\Surveys\\SurveyResponsesViewModel.cs",
+              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Models\\ViewModels\\Surveys\\SurveyResponsesViewModel.cs",
+              "RelativeToolTip": "Models\\ViewModels\\Surveys\\SurveyResponsesViewModel.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAA3wCEAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-21T00:18:42.009Z",
+              "WhenOpened": "2025-06-16T20:30:10.213Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Data\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "Data\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Data\\ApplicationDbContext.cs",
+              "RelativeToolTip": "Data\\ApplicationDbContext.cs",
+              "ViewState": "AgIAACoAAAAAAAAAAADwvy8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-16T20:18:58.88Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Response.cs",
+              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Models\\Domain\\Response.cs",
+              "RelativeDocumentMoniker": "Models\\Domain\\Response.cs",
+              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Models\\Domain\\Response.cs",
+              "RelativeToolTip": "Models\\Domain\\Response.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAQwBkAAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-16T20:18:31.469Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "Dashboard.cshtml.cs",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Surveys\\Dashboard.cshtml.cs",
-              "RelativeDocumentMoniker": "Pages\\Surveys\\Dashboard.cshtml.cs",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Surveys\\Dashboard.cshtml.cs",
-              "RelativeToolTip": "Pages\\Surveys\\Dashboard.cshtml.cs",
-              "ViewState": "AgIAACkAAAAAAAAAAAAvwDUAAAAyAAAAAAAAAA==",
+              "Title": "ApplicationDbContextModelSnapshot.cs",
+              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Data\\Migrations\\ApplicationDbContextModelSnapshot.cs",
+              "RelativeDocumentMoniker": "Data\\Migrations\\ApplicationDbContextModelSnapshot.cs",
+              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Data\\Migrations\\ApplicationDbContextModelSnapshot.cs",
+              "RelativeToolTip": "Data\\Migrations\\ApplicationDbContextModelSnapshot.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-21T00:13:14.442Z",
+              "WhenOpened": "2025-06-16T20:15:53.937Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
-              "Title": "QuestionViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Models\\ViewModels\\Questions\\QuestionViewModel.cs",
-              "RelativeDocumentMoniker": "Models\\ViewModels\\Questions\\QuestionViewModel.cs",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Models\\ViewModels\\Questions\\QuestionViewModel.cs",
-              "RelativeToolTip": "Models\\ViewModels\\Questions\\QuestionViewModel.cs",
-              "ViewState": "AgIAABQAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
+              "Title": "20250616195618_AllowAnonymousResponses.cs",
+              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Data\\Migrations\\20250616195618_AllowAnonymousResponses.cs",
+              "RelativeDocumentMoniker": "Data\\Migrations\\20250616195618_AllowAnonymousResponses.cs",
+              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Data\\Migrations\\20250616195618_AllowAnonymousResponses.cs",
+              "RelativeToolTip": "Data\\Migrations\\20250616195618_AllowAnonymousResponses.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-21T00:08:08.104Z"
+              "WhenOpened": "2025-06-16T20:15:51.062Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 9,
-              "Title": "personalReference.mkd",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\personalReference.mkd",
-              "RelativeDocumentMoniker": "personalReference.mkd",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\personalReference.mkd",
-              "RelativeToolTip": "personalReference.mkd",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-05-20T23:55:38.3Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "List.cshtml.cs",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Surveys\\List.cshtml.cs",
-              "RelativeDocumentMoniker": "Pages\\Surveys\\List.cshtml.cs",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Surveys\\List.cshtml.cs",
-              "RelativeToolTip": "Pages\\Surveys\\List.cshtml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAdAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-20T23:29:40.033Z",
+              "Title": "ThankYou.cshtml",
+              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Responses\\ThankYou.cshtml",
+              "RelativeDocumentMoniker": "Pages\\Responses\\ThankYou.cshtml",
+              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Responses\\ThankYou.cshtml",
+              "RelativeToolTip": "Pages\\Responses\\ThankYou.cshtml",
+              "ViewState": "AgIAABEAAAAAAAAAAAAqwCoAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-06-16T20:07:45.389Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 8,
-              "Title": "List.cshtml",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Surveys\\List.cshtml",
-              "RelativeDocumentMoniker": "Pages\\Surveys\\List.cshtml",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Surveys\\List.cshtml",
-              "RelativeToolTip": "Pages\\Surveys\\List.cshtml",
-              "ViewState": "AgIAAKIAAAAAAAAAAAAUwNEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-20T23:20:17.089Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Home\\Index.cshtml",
-              "RelativeDocumentMoniker": "Pages\\Home\\Index.cshtml",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Home\\Index.cshtml",
-              "RelativeToolTip": "Pages\\Home\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-20T15:46:23.298Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "_ViewStart.cshtml",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Areas\\Identity\\Pages\\_ViewStart.cshtml",
-              "RelativeDocumentMoniker": "Areas\\Identity\\Pages\\_ViewStart.cshtml",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Areas\\Identity\\Pages\\_ViewStart.cshtml",
-              "RelativeToolTip": "Areas\\Identity\\Pages\\_ViewStart.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-20T15:43:23.327Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\appsettings.json",
-              "RelativeDocumentMoniker": "appsettings.json",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\appsettings.json",
-              "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-05-20T15:43:13Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Index.cshtml",
-              "RelativeDocumentMoniker": "Pages\\Index.cshtml",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Index.cshtml",
-              "RelativeToolTip": "Pages\\Index.cshtml",
-              "ViewState": "AgIAAEkAAAAAAAAAAAAswHoAAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-20T15:42:38.284Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Program.cs",
-              "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Program.cs",
-              "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAEYAAAAAAAAAAAAgwFIAAAAAAAAAAAAAAA==",
+              "Title": "ThankYou.cshtml.cs",
+              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Responses\\ThankYou.cshtml.cs",
+              "RelativeDocumentMoniker": "Pages\\Responses\\ThankYou.cshtml.cs",
+              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Responses\\ThankYou.cshtml.cs",
+              "RelativeToolTip": "Pages\\Responses\\ThankYou.cshtml.cs",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAACEAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-20T15:41:12.452Z",
+              "WhenOpened": "2025-06-16T20:07:32.909Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 10,
-              "Title": "PersonBReference.mkd",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\PersonBReference.mkd",
-              "RelativeDocumentMoniker": "PersonBReference.mkd",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\PersonBReference.mkd",
-              "RelativeToolTip": "PersonBReference.mkd",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-05-20T15:41:11.546Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "VoxPopuli.csproj",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\VoxPopuli.csproj",
-              "RelativeDocumentMoniker": "VoxPopuli.csproj",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\VoxPopuli.csproj",
-              "RelativeToolTip": "VoxPopuli.csproj",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAoAAAA8AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-05-20T15:40:56.914Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "launchSettings.json",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Properties\\launchSettings.json",
-              "RelativeDocumentMoniker": "Properties\\launchSettings.json",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Properties\\launchSettings.json",
-              "RelativeToolTip": "Properties\\launchSettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-05-20T15:40:52.435Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "Index.cshtml.cs",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Index.cshtml.cs",
-              "RelativeDocumentMoniker": "Pages\\Index.cshtml.cs",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Index.cshtml.cs",
-              "RelativeToolTip": "Pages\\Index.cshtml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-20T15:40:38.836Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Index.cshtml",
-              "RelativeDocumentMoniker": "Pages\\Index.cshtml",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Index.cshtml",
-              "RelativeToolTip": "Pages\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHwAAABFAAAAAAAAAA==",
+              "Title": "Take.cshtml",
+              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Responses\\Take.cshtml",
+              "RelativeDocumentMoniker": "Pages\\Responses\\Take.cshtml",
+              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Responses\\Take.cshtml",
+              "RelativeToolTip": "Pages\\Responses\\Take.cshtml",
+              "ViewState": "AgIAAHUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-20T15:40:13.433Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "Error.cshtml",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Shared\\Error.cshtml",
-              "RelativeDocumentMoniker": "Pages\\Shared\\Error.cshtml",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Shared\\Error.cshtml",
-              "RelativeToolTip": "Pages\\Shared\\Error.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAACAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-20T15:36:23.551Z",
+              "WhenOpened": "2025-06-16T20:06:40.333Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "_ViewImports.cshtml.cs",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\_ViewImports.cshtml.cs",
-              "RelativeDocumentMoniker": "Pages\\_ViewImports.cshtml.cs",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\_ViewImports.cshtml.cs",
-              "RelativeToolTip": "Pages\\_ViewImports.cshtml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAFAAAAAAAAAA==",
+              "DocumentIndex": 7,
+              "Title": "20250616200200_AllowNullRespondentUserId.cs",
+              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Data\\Migrations\\20250616200200_AllowNullRespondentUserId.cs",
+              "RelativeDocumentMoniker": "Data\\Migrations\\20250616200200_AllowNullRespondentUserId.cs",
+              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Data\\Migrations\\20250616200200_AllowNullRespondentUserId.cs",
+              "RelativeToolTip": "Data\\Migrations\\20250616200200_AllowNullRespondentUserId.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-20T15:34:56.408Z"
+              "WhenOpened": "2025-06-16T20:02:01.364Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "_ViewImports.cshtml",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\_ViewImports.cshtml",
-              "RelativeDocumentMoniker": "Pages\\_ViewImports.cshtml",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\_ViewImports.cshtml",
-              "RelativeToolTip": "Pages\\_ViewImports.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-20T15:32:01.624Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 22,
-              "Title": "site.css",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\wwwroot\\css\\site.css",
-              "RelativeDocumentMoniker": "wwwroot\\css\\site.css",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\wwwroot\\css\\site.css",
-              "RelativeToolTip": "wwwroot\\css\\site.css",
-              "ViewState": "AgIAACwAAAAAAAAAAAAIwE4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-05-20T15:17:16.527Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Dashboard.cshtml",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Surveys\\Dashboard.cshtml",
-              "RelativeDocumentMoniker": "Pages\\Surveys\\Dashboard.cshtml",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Surveys\\Dashboard.cshtml",
-              "RelativeToolTip": "Pages\\Surveys\\Dashboard.cshtml",
-              "ViewState": "AgIAAE4AAAAAAAAAAAAAAF0AAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-20T15:16:46.85Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Create.cshtml",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Surveys\\Create.cshtml",
-              "RelativeDocumentMoniker": "Pages\\Surveys\\Create.cshtml",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Surveys\\Create.cshtml",
-              "RelativeToolTip": "Pages\\Surveys\\Create.cshtml",
-              "ViewState": "AgIAAK0BAAAAAAAAAAAEwAgBAAATAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-20T15:16:04.254Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Create.cshtml.cs",
-              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Surveys\\Create.cshtml.cs",
-              "RelativeDocumentMoniker": "Pages\\Surveys\\Create.cshtml.cs",
-              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Surveys\\Create.cshtml.cs",
-              "RelativeToolTip": "Pages\\Surveys\\Create.cshtml.cs",
-              "ViewState": "AgIAACMAAAAAAAAAAAAwwGoAAAAJAAAAAAAAAA==",
+              "DocumentIndex": 11,
+              "Title": "Take.cshtml.cs",
+              "DocumentMoniker": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Responses\\Take.cshtml.cs",
+              "RelativeDocumentMoniker": "Pages\\Responses\\Take.cshtml.cs",
+              "ToolTip": "C:\\Users\\Bykowy\\source\\repos\\VoxPopuliDev\\Pages\\Responses\\Take.cshtml.cs",
+              "RelativeToolTip": "Pages\\Responses\\Take.cshtml.cs",
+              "ViewState": "AgIAALEAAAAAAAAAAAAcwMIAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-20T15:15:37.703Z",
+              "WhenOpened": "2025-06-15T22:07:15.042Z",
               "EditorCaption": ""
             }
           ]

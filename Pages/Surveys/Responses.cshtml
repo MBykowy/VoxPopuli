@@ -1,0 +1,143 @@
+﻿@page
+@model VoxPopuli.Pages.Surveys.ResponsesModel
+@{
+    ViewData["Title"] = $"Responses for {Model.SurveyResponses.Title}";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-0">@Model.SurveyResponses.Title</h1>
+            <p class="text-muted">Survey Responses Overview</p>
+        </div>
+        <div>
+            <a asp-page="List" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Surveys
+            </a>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <h5 class="card-title">Survey Information</h5>
+                    <p class="card-text">@Model.SurveyResponses.Description</p>
+                    <p class="text-muted">Created: @Model.SurveyResponses.CreatedAt.ToString("MMMM dd, yyyy")</p>
+                </div>
+                <div class="col-md-6">
+                    <div class="text-md-end">
+                        <div class="mb-2">
+                            <span class="badge bg-primary rounded-pill">
+                                <i class="bi bi-people"></i> @Model.SurveyResponses.ResponseCount Responses
+                            </span>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-download"></i> Export Data
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="exportDropdown">
+                                <li><a class="dropdown-item" href="#">Export to CSV</a></li>
+                                <li><a class="dropdown-item" href="#">Export to Excel</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.SurveyResponses.Responses.Any())
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>
+            No responses have been submitted for this survey yet.
+        </div>
+    }
+    else
+    {
+        <div class="accordion" id="responsesAccordion">
+            @foreach (var response in Model.SurveyResponses.Responses)
+            {
+                <div class="accordion-item mb-3 border">
+                    <h2 class="accordion-header" id="heading_@response.ResponseId">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse_@response.ResponseId" aria-expanded="false"
+                                aria-controls="collapse_@response.ResponseId">
+                            <div class="d-flex w-100 justify-content-between align-items-center">
+                                <div>
+                                    <strong>Response #@response.ResponseId</strong>
+                                    <span class="ms-3">
+                                        @if (response.IsAnonymous)
+                                        {
+                                            <span class="badge bg-secondary">
+                                                <i class="bi bi-incognito me-1"></i> Anonymous
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span>by @response.RespondentName</span>
+                                        }
+                                    </span>
+                                </div>
+                                <small class="text-muted">@response.SubmittedAt.ToString("MMM dd, yyyy hh:mm tt")</small>
+                            </div>
+                        </button>
+                    </h2>
+                    <div id="collapse_@response.ResponseId" class="accordion-collapse collapse"
+                         aria-labelledby="heading_@response.ResponseId" data-bs-parent="#responsesAccordion">
+                        <div class="accordion-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Question</th>
+                                        <th>Answer</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var answer in response.Answers)
+                                    {
+                                        <tr>
+                                            <td>@answer.QuestionText</td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(answer.SelectedOptionText))
+                                                {
+                                                    <span>@answer.SelectedOptionText</span>
+                                                }
+                                                else if (answer.Rating.HasValue)
+                                                {
+                                                    <div class="rating">
+                                                        @for (int i = 1; i <= 5; i++)
+                                                        {
+                                                            if (i <= answer.Rating)
+                                                            {
+                                                                <i class="bi bi-star-fill text-warning"></i>
+                                                            }
+                                                            else
+                                                            {
+                                                                <i class="bi bi-star text-muted"></i>
+                                                            }
+                                                        }
+                                                        <span class="ms-2">(@answer.Rating out of 5)</span>
+                                                    </div>
+                                                }
+                                                else if (!string.IsNullOrEmpty(answer.AnswerText))
+                                                {
+                                                    <span>@answer.AnswerText</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">No answer provided</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
