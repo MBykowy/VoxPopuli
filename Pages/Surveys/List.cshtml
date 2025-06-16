@@ -91,6 +91,12 @@
                                             <i class="bi bi-eye me-2"></i> Preview
                                         </a>
                                     </li>
+                                    <!-- In the dropdown menu for each survey -->
+<li>
+    <a class="dropdown-item" asp-page="Responses" asp-route-id="@survey.SurveyId">
+        <i class="bi bi-people-fill me-2"></i> View All Responses
+    </a>
+</li>
                                     <li>
                                         <a class="dropdown-item" asp-page="ExportResults" asp-route-id="@survey.SurveyId">
                                             <i class="bi bi-download me-2"></i> Export
