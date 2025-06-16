@@ -217,7 +217,7 @@
                 addNewQuestion();
             });
 
-            // Function to add a new question
+               // Function to add a new question
             function addNewQuestion() {
                 questionCounter++;
 
@@ -266,78 +266,62 @@
 
                 // Add hidden inputs to store the question data for form submission
                 const questionTextInput = questionElement.querySelector('.question-text');
-                questionTextInput.name = `Survey.Questions[${questionCounter - 1}].Text`;
+                questionTextInput.name = `Survey.Questions[${questionCounter - 1}].QuestionText`; // Corrected name
 
                 const questionTypeInput = questionElement.querySelector('.question-type');
                 questionTypeInput.name = `Survey.Questions[${questionCounter - 1}].QuestionType`;
 
                 const questionRequiredInput = questionElement.querySelector('.question-required');
                 questionRequiredInput.name = `Survey.Questions[${questionCounter - 1}].IsRequired`;
+                questionRequiredInput.value = "true"; 
 
-                // Initialize the question type (default: single choice)
+                // Initialize the question type and add default options ONLY IF NEEDED
                 updateOptionsVisibility(questionElement, questionTypeSelect.value);
-
-                // Add default options for choice-based questions
-                if (questionTypeSelect.value === '1' || questionTypeSelect.value === '2' || questionTypeSelect.value === '6') {
-                    addOptionToQuestion(questionElement);
-                    addOptionToQuestion(questionElement);
-                }
-
-                // Append the question to the container
+                
                 questionsContainer.appendChild(questionElement);
 
-                // Focus the question text input
                 questionTextInput.focus();
             }
 
-            // Function to add an option to a question
             function addOptionToQuestion(questionElement) {
                 const optionsContainer = questionElement.querySelector('.options-list');
                 const questionIndex = parseInt(questionElement.querySelector('.question-number').textContent) - 1;
                 const optionIndex = optionsContainer.children.length;
 
-                // Create option element from template
                 const optionWrapper = document.createElement('div');
                 optionWrapper.innerHTML = optionTemplate;
                 const optionElement = optionWrapper.firstElementChild;
                 optionElement.classList.remove('d-none');
 
-                // Set name for the option input for form submission
                 const optionTextInput = optionElement.querySelector('.option-text');
                 optionTextInput.name = `Survey.Questions[${questionIndex}].Options[${optionIndex}].Text`;
 
-                // Add event listener for removing this option
                 const removeOptionBtn = optionElement.querySelector('.remove-option-btn');
                 removeOptionBtn.addEventListener('click', function() {
-                    if (optionsContainer.children.length > 2) {
+                    if (optionsContainer.children.length > 2 || optionsContainer.children.length === 1 && (questionElement.querySelector('.question-type').value !== '1' && questionElement.querySelector('.question-type').value !== '2' && questionElement.querySelector('.question-type').value !== '6') ) { // Allow removing last option if not choice based
                         optionElement.remove();
-                        // Renumber the remaining options
                         updateOptionsIndexes(questionElement);
-                    } else {
+                    } else if (optionsContainer.children.length === 2 && (questionElement.querySelector('.question-type').value === '1' || questionElement.querySelector('.question-type').value === '2' || questionElement.querySelector('.question-type').value === '6')) {
                         alert('Choice questions require at least two options.');
+                    } else {
+                         optionElement.remove(); // Allow removing the single option if it's the only one for non-choice
+                         updateOptionsIndexes(questionElement);
                     }
                 });
 
-                // Add the option to the container
                 optionsContainer.appendChild(optionElement);
-
-                // Focus the new option's text input
                 optionTextInput.focus();
             }
 
-            // Function to remove a question
             function removeQuestion(questionElement) {
                 questionElement.remove();
                 updateQuestionNumbers();
-
-                // Show "no questions" message if all questions are removed
                 if (questionsContainer.querySelectorAll('.question-item').length === 0) {
                     noQuestionsMessage.style.display = 'block';
                     questionCounter = 0;
                 }
             }
 
-            // Function to move a question up
             function moveQuestionUp(questionElement) {
                 const previousQuestion = questionElement.previousElementSibling;
                 if (previousQuestion && previousQuestion.classList.contains('question-item')) {
@@ -346,7 +330,6 @@
                 }
             }
 
-            // Function to move a question down
             function moveQuestionDown(questionElement) {
                 const nextQuestion = questionElement.nextElementSibling;
                 if (nextQuestion && nextQuestion.classList.contains('question-item')) {
@@ -355,67 +338,81 @@
                 }
             }
 
-            // Function to update question numbers after reordering or removal
             function updateQuestionNumbers() {
                 const questions = questionsContainer.querySelectorAll('.question-item');
                 questions.forEach((question, index) => {
-                    // Update visible number
                     question.querySelector('.question-number').textContent = index + 1;
-
-                    // Update input names
                     const questionTextInput = question.querySelector('.question-text');
-                    questionTextInput.name = `Survey.Questions[${index}].Text`;
+                    questionTextInput.name = `Survey.Questions[${index}].QuestionText`; // Corrected name
 
                     const questionTypeInput = question.querySelector('.question-type');
                     questionTypeInput.name = `Survey.Questions[${index}].QuestionType`;
 
                     const questionRequiredInput = question.querySelector('.question-required');
                     questionRequiredInput.name = `Survey.Questions[${index}].IsRequired`;
-
-                    // Update options indexes
+                    if (questionRequiredInput.type === 'checkbox') {
+                        questionRequiredInput.value = "true";
+                    }
                     updateOptionsIndexes(question, index);
                 });
             }
 
-            // Function to update option indexes within a question
-            function updateOptionsIndexes(questionElement, questionIndex) {
-                if (questionIndex === undefined) {
-                    questionIndex = parseInt(questionElement.querySelector('.question-number').textContent) - 1;
-                }
-
-                const options = questionElement.querySelectorAll('.option-item');
-                options.forEach((option, optionIndex) => {
+            function updateOptionsIndexes(questionElement, questionIndexOverride) {
+                const questionIndex = questionIndexOverride !== undefined 
+                                    ? questionIndexOverride 
+                                    : parseInt(questionElement.querySelector('.question-number').textContent) - 1;
+                const optionsList = questionElement.querySelector('.options-list');
+                const options = optionsList.querySelectorAll('.option-item');
+                options.forEach((option, optionIdx) => {
                     const optionTextInput = option.querySelector('.option-text');
-                    optionTextInput.name = `Survey.Questions[${questionIndex}].Options[${optionIndex}].Text`;
+                    optionTextInput.name = `Survey.Questions[${questionIndex}].Options[${optionIdx}].Text`;
                 });
             }
 
-            // Function to show/hide options based on question type
             function updateOptionsVisibility(questionElement, questionType) {
                 const optionsContainer = questionElement.querySelector('.answer-options-container');
+                const optionsList = questionElement.querySelector('.options-list');
+                const currentOptionCount = optionsList.children.length;
 
-                // Show options for choice-based questions
-                if (questionType === '1' || questionType === '2' || questionType === '6') { // Radio, Checkbox, or Dropdown
+                if (questionType === '1' || questionType === '2' || questionType === '6') { 
                     optionsContainer.style.display = 'block';
-                } else {
+                    if (currentOptionCount === 0) {
+                        addOptionToQuestion(questionElement);
+                        addOptionToQuestion(questionElement);
+                    } else if (currentOptionCount === 1) { // If one option exists, add one more
+                        addOptionToQuestion(questionElement);
+                    }
+                } else { 
                     optionsContainer.style.display = 'none';
+                    while (optionsList.firstChild) {
+                        optionsList.removeChild(optionsList.firstChild);
+                    }
                 }
             }
 
             // Form validation before submission
             document.getElementById('surveyForm').addEventListener('submit', function(event) {
-                // Check if at least one question exists
+                // MOVED THE LOGGING CODE HERE
+                console.log("Form submission initiated (from submit event listener)");
+                const questionsInForm = questionsContainer.querySelectorAll('.question-item');
+                questionsInForm.forEach((question, index) => {
+                    const qTextInstance = question.querySelector('.question-text');
+                    if (qTextInstance) {
+                        console.log(`Client-side (submit event): Question ${index} Text Input Value: '${qTextInstance.value}'`);
+                    } else {
+                        console.log(`Client-side (submit event): Question ${index} Text Input NOT FOUND`);
+                    }
+                });
+
                 if (questionsContainer.querySelectorAll('.question-item').length === 0) {
                     event.preventDefault();
                     alert('You must add at least one question to create a survey.');
                     return false;
                 }
 
-                // Validate all question texts and options
                 let isValid = true;
-                const questions = questionsContainer.querySelectorAll('.question-item');
-
-                questions.forEach((question, index) => {
+                const allQuestions = questionsContainer.querySelectorAll('.question-item'); // Renamed to avoid conflict
+                allQuestions.forEach((question, index) => {
                     const questionText = question.querySelector('.question-text').value.trim();
                     if (!questionText) {
                         isValid = false;
@@ -425,6 +422,10 @@
                     const questionType = question.querySelector('.question-type').value;
                     if (questionType === '1' || questionType === '2' || questionType === '6') {
                         const options = question.querySelectorAll('.option-text');
+                        if (options.length < 2) { // Simplified check for at least two options
+                             isValid = false;
+                             alert(`Question ${index + 1} (a choice-based question) requires at least two options.`);
+                        }
                         options.forEach((option, optIndex) => {
                             if (!option.value.trim()) {
                                 isValid = false;

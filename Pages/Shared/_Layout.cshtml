@@ -40,6 +40,22 @@
                             </li>
                         }
 
+                        <!-- Add this after the Analytics Dashboard dropdown, inside the same conditional check -->
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarAdmin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-shield-lock"></i> Administration
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarAdmin">
+                                    <li><a class="dropdown-item" asp-page="/Admin/UserRoles/Index">User Roles</a></li>
+                                    <li><a class="dropdown-item" asp-page="/Admin/Roles/Index">Manage Roles</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" asp-page="/Admin/SystemSettings">System Settings</a></li>
+                                </ul>
+                            </li>
+                        }
+
                         <!-- Regular Survey Menu -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarSurveys" role="button" data-bs-toggle="dropdown" aria-expanded="false">

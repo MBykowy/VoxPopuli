@@ -38,7 +38,7 @@ namespace VoxPopuli.Mappings
                 .ForMember(dest => dest.SurveyId, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
                 .ForMember(dest => dest.Creator, opt => opt.Ignore())
-                .ForMember(dest => dest.Questions, opt => opt.Ignore())
+                .ForMember(dest => dest.Questions, opt => opt.MapFrom(src => src.Questions)) // Ensure Questions are mapped
                 .ForMember(dest => dest.Responses, opt => opt.Ignore())
                 .ForMember(dest => dest.PasswordHash, opt => opt.Ignore()); // Ignore password hash - handle separately
 
@@ -51,7 +51,7 @@ namespace VoxPopuli.Mappings
             CreateMap<SurveyEditViewModel, Survey>()
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
                 .ForMember(dest => dest.Creator, opt => opt.Ignore())
-                .ForMember(dest => dest.Questions, opt => opt.Ignore())
+                .ForMember(dest => dest.Questions, opt => opt.MapFrom(src => src.Questions)) // Ensure Questions are mapped if editing them
                 .ForMember(dest => dest.Responses, opt => opt.Ignore())
                 .ForMember(dest => dest.PasswordHash, opt => opt.Ignore()); // Ignore password hash - handle separately
 
