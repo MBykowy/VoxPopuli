@@ -11,9 +11,20 @@ namespace VoxPopuli.Models.ViewModels.Surveys
         public string Description { get; set; }
         public DateTime CreatedAt { get; set; }
         public int ResponseCount { get; set; }
+
+        public int CompletionRate { get; set; } = 100; // Default value
+        public string AvgCompletionTime { get; set; } = "2.5"; // Default value
+        public List<ResponseDateCount> ResponseDateCounts { get; set; } = new List<ResponseDateCount>();
+
+
         public List<ResponseDetailViewModel> Responses { get; set; } = new List<ResponseDetailViewModel>();
     }
-
+    // Create this new class
+    public class ResponseDateCount
+    {
+        public string Date { get; set; }
+        public int Count { get; set; }
+    }
     public class ResponseDetailViewModel
     {
         public int ResponseId { get; set; }
