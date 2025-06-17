@@ -30,6 +30,30 @@ namespace VoxPopuli.Pages.Surveys
             _mapper = mapper;
         }
 
+
+        // Change from async method name to match the form handler name exactly
+        public IActionResult OnPostExportResponsesPdf()
+        {
+            // The Id property is already bound from the route
+            // No need to reload it manually
+
+            // Load the data
+            var result = OnGetAsync().GetAwaiter().GetResult();
+            if (result is NotFoundResult)
+                return NotFound();
+
+            var pdfService = HttpContext.RequestServices.GetRequiredService<VoxPopuli.Services.PDF.PdfExportService>();
+
+            // Generate PDF
+            byte[] pdfBytes = pdfService.GenerateSurveyResponsesPdf(SurveyResponses);
+
+            // Return as downloadable file
+            return File(
+                pdfBytes,
+                "application/pdf",
+                $"Survey-Responses-{SurveyResponses.Title}-{DateTime.Now:yyyyMMdd}.pdf");
+        }
+
         [BindProperty(SupportsGet = true)]
         public int Id { get; set; }
 

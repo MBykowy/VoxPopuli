@@ -40,7 +40,48 @@ namespace VoxPopuli.Pages.Surveys
 
         // Recent activity
         public List<RecentActivityViewModel> RecentActivities { get; set; } = new List<RecentActivityViewModel>();
+        // Add this method to your DashboardModel class
 
+        public async Task<IActionResult> OnPostExportDashboardPdfAsync()
+        {
+            // First load all the data we need
+            await OnGetAsync();
+
+            var pdfService = HttpContext.RequestServices.GetRequiredService<VoxPopuli.Services.PDF.PdfExportService>();
+
+            // Create the list of top surveys with correct type (Dashboard ViewModel)
+            var topSurveys = TopSurveyLabels.Select((title, index) => new TopSurveyViewModel
+            {
+                Title = title,
+                ResponseCount = TopSurveyData[index],
+                CompletionRate = 80 // Example value, adjust as needed or calculate from your data
+            }).ToList();
+
+            // Convert RecentActivities to the required Dashboard namespace type
+            var recentActivitiesForPdf = RecentActivities.Select(a => new VoxPopuli.Models.ViewModels.Dashboard.RecentActivityViewModel
+            {
+                SurveyTitle = a.SurveyTitle,
+                ActivityType = a.ActivityType,
+                Timestamp = a.Timestamp,
+                Username = a.Username,
+                ActionLink = a.ActionLink
+            }).ToList();
+
+            // Generate the PDF
+            byte[] pdfBytes = pdfService.GenerateAnalyticsDashboardPdf(
+                TotalSurveys,
+                TotalResponses,
+                ActiveSurveys,
+                AvgResponseRate,
+                topSurveys,
+                recentActivitiesForPdf); // Using our converted list
+
+            // Return as a downloadable file
+            return File(
+                pdfBytes,
+                "application/pdf",
+                $"Survey-Analytics-Dashboard-{DateTime.Now:yyyyMMdd}.pdf");
+        }
         public async Task<IActionResult> OnGetAsync(string period = "monthly")
         {
             // Calculate date ranges based on period

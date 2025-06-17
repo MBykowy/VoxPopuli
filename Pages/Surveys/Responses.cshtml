@@ -25,22 +25,20 @@
                     <p class="card-text">@Model.SurveyResponses.Description</p>
                     <p class="text-muted">Created: @Model.SurveyResponses.CreatedAt.ToString("MMMM dd, yyyy")</p>
                 </div>
-                <div class="col-md-6">
+               <div class="col-md-6">
                     <div class="text-md-end">
                         <div class="mb-2">
                             <span class="badge bg-primary rounded-pill">
                                 <i class="bi bi-people"></i> @Model.SurveyResponses.ResponseCount Responses
                             </span>
                         </div>
-                        <div class="dropdown">
-                            <button class="btn btn-outline-primary dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-download"></i> Export Data
+                        <!-- Replace the dropdown with a direct PDF export button -->
+                        <!-- Update the form to include the survey ID -->
+                        <form method="post" asp-page-handler="ExportResponsesPdf" asp-route-id="@Model.Id">
+                            <button type="submit" class="btn btn-outline-danger">
+                                <i class="bi bi-file-pdf"></i> Export to PDF
                             </button>
-                            <ul class="dropdown-menu" aria-labelledby="exportDropdown">
-                                <li><a class="dropdown-item" href="#">Export to CSV</a></li>
-                                <li><a class="dropdown-item" href="#">Export to Excel</a></li>
-                            </ul>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>

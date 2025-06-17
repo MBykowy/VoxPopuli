@@ -13,6 +13,12 @@ using VoxPopuli.Models.ViewModels.Questions;
 using VoxPopuli.Models.ViewModels.Responses;
 using VoxPopuli.Models.ViewModels.Surveys;
 using VoxPopuli.Services;
+using QuestPDF.Infrastructure;
+
+// Add this near the beginning of Program.cs, before app builder configuration
+QuestPDF.Settings.License = LicenseType.Community;
+
+
 
 // At the top of Program.cs, before var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
@@ -38,7 +44,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
+// After other service registrations
+builder.Services.AddScoped<VoxPopuli.Services.PDF.PdfExportService>();
 // Replace this:
 // builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
 //     .AddRoles<IdentityRole>()

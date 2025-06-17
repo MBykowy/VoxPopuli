@@ -36,7 +36,29 @@ namespace VoxPopuli.Pages.Surveys
         public int Id { get; set; }
 
         public SurveyResultViewModel? SurveyResult { get; set; }
+        // Add these methods to your ResultsModel class
 
+        public IActionResult OnPostExportPdfAsync()
+        {
+            var pdfService = HttpContext.RequestServices.GetRequiredService<VoxPopuli.Services.PDF.PdfExportService>();
+
+            // Make sure we have the survey data
+            if (SurveyResult == null)
+            {
+                var result = OnGetAsync().GetAwaiter().GetResult();
+                if (result is NotFoundResult)
+                    return NotFound();
+            }
+
+            // Generate the PDF
+            byte[] pdfBytes = pdfService.GenerateSurveyResultPdf(SurveyResult);
+
+            // Return as a downloadable file
+            return File(
+                pdfBytes,
+                "application/pdf",
+                $"Survey-Results-{SurveyResult.Title}-{DateTime.Now:yyyyMMdd}.pdf");
+        }
         public async Task<IActionResult> OnGetAsync()
         {
             _logger.LogInformation("Accessing results for survey ID: {SurveyId}", Id);
