@@ -1,0 +1,589 @@
+﻿@page "{id:int}"
+@model VoxPopuli.Pages.Surveys.EditModel
+@{
+    ViewData["Title"] = "Edit Survey";
+}
+
+<div class="container py-4 py-lg-5">
+    <div class="page-header-section text-center">
+        <i class="bi bi-pencil-square display-2 text-primary mb-3"></i>
+        <h1 class="display-5 fw-bold mb-2">Edit Survey</h1>
+        <p class="lead text-muted col-lg-8 mx-auto">
+            Update your survey details, questions, and settings below.
+        </p>
+    </div>
+
+    <form method="post" id="surveyForm" class="needs-validation" novalidate>
+        <input type="hidden" asp-for="Id" />
+
+        <div class="row mb-4 gx-lg-4">
+            <div class="col-lg-7 mb-4 mb-lg-0">
+                <div class="card shadow-lg h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0 d-flex align-items-center">
+                            <i class="bi bi-file-text-fill text-primary me-2 fs-4"></i>Survey Details
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-4">
+                            <label asp-for="Survey.Title" class="form-label fw-semibold">Survey Title <span class="text-danger">*</span></label>
+                            <input asp-for="Survey.Title" class="form-control form-control-lg" required />
+                            <span asp-validation-for="Survey.Title" class="invalid-feedback d-block"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Survey.Description" class="form-label fw-semibold">Description</label>
+                            <textarea asp-for="Survey.Description" class="form-control" rows="5" placeholder="Provide context about the survey (Optional)"></textarea>
+                            <span asp-validation-for="Survey.Description" class="invalid-feedback d-block"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="card shadow-lg h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0 d-flex align-items-center">
+                            <i class="bi bi-sliders text-primary me-2 fs-4"></i>Survey Settings
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="form-check form-switch mb-3 pt-1">
+                            <input asp-for="Survey.IsActive" class="form-check-input" type="checkbox" role="switch" id="isActiveSwitch" />
+                            <label asp-for="Survey.IsActive" class="form-check-label fw-semibold" for="isActiveSwitch">Active</label>
+                            <div class="form-text">Controls if the survey can accept new responses.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Survey.StartDate" class="form-label fw-semibold">Start Date</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-calendar-play"></i></span>
+                                <input asp-for="Survey.StartDate" type="datetime-local" class="form-control" />
+                            </div>
+                            <span asp-validation-for="Survey.StartDate" class="invalid-feedback d-block"></span>
+                            <div class="form-text">When the survey becomes available. (Optional)</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Survey.EndDate" class="form-label fw-semibold">End Date</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-calendar-x"></i></span>
+                                <input asp-for="Survey.EndDate" type="datetime-local" class="form-control" />
+                            </div>
+                            <span asp-validation-for="Survey.EndDate" class="invalid-feedback d-block"></span>
+                            <div class="form-text">When the survey stops accepting responses. (Optional)</div>
+                        </div>
+
+                        <div class="form-check form-switch mb-3 pt-1">
+                            <input asp-for="Survey.AllowAnonymous" class="form-check-input" type="checkbox" role="switch" id="allowAnonymousSwitch" />
+                            <label asp-for="Survey.AllowAnonymous" class="form-check-label fw-semibold" for="allowAnonymousSwitch">Allow Anonymous Responses</label>
+                            <div class="form-text">If checked, users don't need to log in to respond.</div>
+                        </div>
+
+                        <div class="mb-0">
+                            <label asp-for="Survey.Password" class="form-label fw-semibold">Password Protection</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-shield-lock-fill"></i></span>
+                                <input asp-for="Survey.Password" type="password" class="form-control" placeholder="Leave blank to keep current password" />
+                            </div>
+                            <span asp-validation-for="Survey.Password" class="invalid-feedback d-block"></span>
+                            <div class="form-text">Update password or leave blank to keep the current one.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-lg mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0 d-flex align-items-center">
+                    <i class="bi bi-patch-question-fill text-primary me-2 fs-4"></i>Survey Questions
+                </h5>
+                <button type="button" class="btn btn-primary btn-sm fw-medium" id="addQuestionBtn">
+                    <i class="bi bi-plus-circle-dotted me-1"></i> Add New Question
+                </button>
+            </div>
+            <div class="card-body p-lg-4" id="questionsContainer">
+                <!-- Questions will be loaded here -->
+                <div class="text-center py-5 rounded-3" id="noQuestionsMessage" style="background-color: var(--bs-tertiary-bg); display: none;">
+                    <i class="bi bi-clipboard-plus display-3 text-muted mb-3"></i>
+                    <h4 class="mb-2 fw-normal">Your survey needs questions!</h4>
+                    <p class="text-muted mb-3 col-md-8 col-lg-6 mx-auto">
+                        Click the "Add New Question" button above to add questions to your survey.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center pt-4 border-top mt-5">
+            <a asp-page="List" class="btn btn-outline-secondary rounded-pill px-4 py-2">
+                <i class="bi bi-arrow-left-circle me-1"></i> Cancel & Back to List
+            </a>
+            <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 py-2">
+                <i class="bi bi-save me-1"></i> Save Changes
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Templates for dynamic content -->
+<div class="question-template d-none">
+    <div class="question-item card mb-3 border-start border-primary border-4 shadow-sm">
+        <div class="card-header bg-light-subtle d-flex justify-content-between align-items-center py-2 px-3">
+            <h6 class="mb-0 fw-semibold text-primary-emphasis d-flex align-items-center">
+                <i class="bi bi-grip-vertical me-2 text-muted question-drag-handle"></i>
+                Question <span class="question-number"></span>
+            </h6>
+            <div class="btn-group btn-group-sm question-actions">
+                <button type="button" class="btn btn-outline-secondary move-up-btn"><i class="bi bi-arrow-up-square"></i></button>
+                <button type="button" class="btn btn-outline-secondary move-down-btn"><i class="bi bi-arrow-down-square"></i></button>
+                <button type="button" class="btn btn-outline-danger remove-question-btn"><i class="bi bi-trash2-fill"></i></button>
+            </div>
+        </div>
+        <div class="card-body p-3">
+            <input type="hidden" class="question-id" />
+            <div class="mb-3">
+                <label class="form-label fw-medium">Question Text <span class="text-danger">*</span></label>
+                <input type="text" class="form-control question-text" required placeholder="Enter your question text here" />
+                <div class="invalid-feedback">Question text is required.</div>
+            </div>
+
+            <div class="row gx-3 mb-3 align-items-end">
+                <div class="col-md-7">
+                    <label class="form-label fw-medium">Question Type</label>
+                    <select class="form-select question-type">
+                        <option value="1">Single Choice (Radio)</option>
+                        <option value="2">Multiple Choice (Checkbox)</option>
+                        <option value="3">Short Text</option>
+                        <option value="4">Rating (e.g., Stars, Scale)</option>
+                        <option value="5">Long Text (Textarea)</option>
+                        <option value="6">Dropdown Select</option>
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-check form-switch mt-3 mt-md-0 float-md-end">
+                        <input type="checkbox" class="form-check-input question-required" checked id="qRequiredPlaceholder" />
+                        <label class="form-check-label fw-medium" for="qRequiredPlaceholder">Required</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="answer-options-container mt-3 pt-3 border-top">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label class="form-label fw-medium mb-0">Answer Options</label>
+                    <button type="button" class="btn btn-sm btn-outline-primary py-1 add-option-btn">
+                        <i class="bi bi-plus-lg me-1"></i> Add Option
+                    </button>
+                </div>
+                <div class="options-list"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="option-template d-none">
+    <div class="input-group input-group-sm mb-2 option-item">
+        <span class="input-group-text option-drag-handle-icon"><i class="bi bi-grip-vertical text-muted"></i></span>
+        <input type="hidden" class="option-id" />
+        <input type="text" class="form-control option-text" placeholder="Enter option text" required />
+        <button type="button" class="btn btn-outline-danger remove-option-btn">
+            <i class="bi bi-x-lg"></i>
+        </button>
+        <div class="invalid-feedback d-block ms-2">Option text is required.</div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get references to key elements
+            const addQuestionBtn = document.getElementById('addQuestionBtn');
+            const questionsContainer = document.getElementById('questionsContainer');
+            const noQuestionsMessage = document.getElementById('noQuestionsMessage');
+            const questionTemplate = document.querySelector('.question-template').innerHTML;
+            const optionTemplate = document.querySelector('.option-template').innerHTML;
+
+            // Track how many questions have been added
+            let questionCounter = 0;
+
+            // Initialize the form - hide templates that shouldn't be rendered
+            document.querySelector('.question-template').remove();
+            document.querySelector('.option-template').remove();
+
+            // Load existing questions from model
+            const existingQuestions = @Html.Raw(Json.Serialize(Model.Survey.Questions ?? new List<VoxPopuli.Models.ViewModels.Questions.QuestionViewModel>()));
+            if (existingQuestions && existingQuestions.length > 0) {
+                existingQuestions.forEach(question => {
+                    addExistingQuestion(question);
+                });
+            } else {
+                noQuestionsMessage.style.display = 'block';
+            }
+
+            // Add question button click handler
+            addQuestionBtn.addEventListener('click', function() {
+                // Hide the "no questions" message
+                noQuestionsMessage.style.display = 'none';
+                // Create a new question element
+                addNewQuestion();
+            });
+
+            // Function to add an existing question from the model
+            function addExistingQuestion(questionData) {
+                questionCounter++;
+
+                // Create a new question wrapper
+                const questionWrapper = document.createElement('div');
+                questionWrapper.innerHTML = questionTemplate;
+                const questionElement = questionWrapper.firstElementChild;
+
+                // Update question number
+                questionElement.querySelector('.question-number').textContent = questionCounter;
+
+                // Set question ID if it exists
+                const questionIdInput = questionElement.querySelector('.question-id');
+                questionIdInput.name = `Survey.Questions[${questionCounter - 1}].QuestionId`;
+                questionIdInput.value = questionData.questionId || 0;
+
+                // Set question text
+                const questionTextInput = questionElement.querySelector('.question-text');
+                questionTextInput.name = `Survey.Questions[${questionCounter - 1}].QuestionText`;
+                questionTextInput.value = questionData.questionText || '';
+
+                // Set question type
+                const questionTypeSelect = questionElement.querySelector('.question-type');
+                questionTypeSelect.name = `Survey.Questions[${questionCounter - 1}].QuestionType`;
+                questionTypeSelect.value = questionData.questionType || 1;
+
+                // Set required status
+                const questionRequiredInput = questionElement.querySelector('.question-required');
+                const uniqueId = 'question_' + questionCounter + '_required';
+                questionRequiredInput.id = uniqueId;
+                questionRequiredInput.name = `Survey.Questions[${questionCounter - 1}].IsRequired`;
+                questionRequiredInput.value = "true";
+                questionRequiredInput.checked = questionData.isRequired !== false;
+                questionRequiredInput.nextElementSibling.setAttribute('for', uniqueId);
+
+                // Add event listeners for the question type dropdown
+                questionTypeSelect.addEventListener('change', function() {
+                    updateOptionsVisibility(questionElement, this.value);
+                });
+
+                // Add event listener for adding options
+                const addOptionBtn = questionElement.querySelector('.add-option-btn');
+                addOptionBtn.addEventListener('click', function() {
+                    addOptionToQuestion(questionElement);
+                });
+
+                // Add event listeners for question action buttons
+                const removeBtn = questionElement.querySelector('.remove-question-btn');
+                removeBtn.addEventListener('click', function() {
+                    removeQuestion(questionElement);
+                });
+
+                const moveUpBtn = questionElement.querySelector('.move-up-btn');
+                moveUpBtn.addEventListener('click', function() {
+                    moveQuestionUp(questionElement);
+                });
+
+                const moveDownBtn = questionElement.querySelector('.move-down-btn');
+                moveDownBtn.addEventListener('click', function() {
+                    moveQuestionDown(questionElement);
+                });
+
+                // Add options if they exist
+                if (questionData.options && questionData.options.length > 0) {
+                    questionData.options.forEach(option => {
+                        addExistingOptionToQuestion(questionElement, option);
+                    });
+                }
+
+                // Update options visibility based on question type
+                updateOptionsVisibility(questionElement, questionTypeSelect.value);
+
+                questionsContainer.appendChild(questionElement);
+            }
+
+            // Function to add a new question
+            function addNewQuestion() {
+                questionCounter++;
+
+                // Create a new question wrapper
+                const questionWrapper = document.createElement('div');
+                questionWrapper.innerHTML = questionTemplate;
+                const questionElement = questionWrapper.firstElementChild;
+
+                // Update question number
+                questionElement.querySelector('.question-number').textContent = questionCounter;
+
+                // Set unique IDs for form elements
+                const questionIdInput = questionElement.querySelector('.question-id');
+                questionIdInput.name = `Survey.Questions[${questionCounter - 1}].QuestionId`;
+                questionIdInput.value = 0;
+
+                const requiredSwitch = questionElement.querySelector('.question-required');
+                const uniqueId = 'question_' + questionCounter + '_required';
+                requiredSwitch.id = uniqueId;
+                requiredSwitch.name = `Survey.Questions[${questionCounter - 1}].IsRequired`;
+                requiredSwitch.value = "true";
+                requiredSwitch.nextElementSibling.setAttribute('for', uniqueId);
+
+                // Add event listeners for the question type dropdown
+                const questionTypeSelect = questionElement.querySelector('.question-type');
+                questionTypeSelect.name = `Survey.Questions[${questionCounter - 1}].QuestionType`;
+                questionTypeSelect.addEventListener('change', function() {
+                    updateOptionsVisibility(questionElement, this.value);
+                });
+
+                // Add event listener for adding options
+                const addOptionBtn = questionElement.querySelector('.add-option-btn');
+                addOptionBtn.addEventListener('click', function() {
+                    addOptionToQuestion(questionElement);
+                });
+
+                // Add event listeners for question action buttons
+                const removeBtn = questionElement.querySelector('.remove-question-btn');
+                removeBtn.addEventListener('click', function() {
+                    removeQuestion(questionElement);
+                });
+
+                const moveUpBtn = questionElement.querySelector('.move-up-btn');
+                moveUpBtn.addEventListener('click', function() {
+                    moveQuestionUp(questionElement);
+                });
+
+                const moveDownBtn = questionElement.querySelector('.move-down-btn');
+                moveDownBtn.addEventListener('click', function() {
+                    moveQuestionDown(questionElement);
+                });
+
+                // Add hidden inputs to store the question data for form submission
+                const questionTextInput = questionElement.querySelector('.question-text');
+                questionTextInput.name = `Survey.Questions[${questionCounter - 1}].QuestionText`;
+
+                // Initialize the question type and add default options
+                updateOptionsVisibility(questionElement, questionTypeSelect.value);
+
+                questionsContainer.appendChild(questionElement);
+                questionTextInput.focus();
+            }
+
+            // Function to add an existing option to a question
+            function addExistingOptionToQuestion(questionElement, optionData) {
+                const optionsContainer = questionElement.querySelector('.options-list');
+                const questionIndex = parseInt(questionElement.querySelector('.question-number').textContent) - 1;
+                const optionIndex = optionsContainer.children.length;
+
+                const optionWrapper = document.createElement('div');
+                optionWrapper.innerHTML = optionTemplate;
+                const optionElement = optionWrapper.firstElementChild;
+
+                // Set option ID
+                const optionIdInput = optionElement.querySelector('.option-id');
+                optionIdInput.name = `Survey.Questions[${questionIndex}].Options[${optionIndex}].AnswerOptionId`;
+                optionIdInput.value = optionData.answerOptionId || 0;
+
+                // Set option text
+                const optionTextInput = optionElement.querySelector('.option-text');
+                optionTextInput.name = `Survey.Questions[${questionIndex}].Options[${optionIndex}].OptionText`;
+                optionTextInput.value = optionData.optionText || '';
+
+                // Set up event listener for remove button
+                const removeOptionBtn = optionElement.querySelector('.remove-option-btn');
+                removeOptionBtn.addEventListener('click', function() {
+                    if (optionsContainer.children.length > 2 ||
+                       (optionsContainer.children.length === 1 &&
+                        (questionElement.querySelector('.question-type').value !== '1' &&
+                         questionElement.querySelector('.question-type').value !== '2' &&
+                         questionElement.querySelector('.question-type').value !== '6'))) {
+                        optionElement.remove();
+                        updateOptionsIndexes(questionElement);
+                    } else if (optionsContainer.children.length === 2 &&
+                              (questionElement.querySelector('.question-type').value === '1' ||
+                               questionElement.querySelector('.question-type').value === '2' ||
+                               questionElement.querySelector('.question-type').value === '6')) {
+                        alert('Choice questions require at least two options.');
+                    } else {
+                        optionElement.remove();
+                        updateOptionsIndexes(questionElement);
+                    }
+                });
+
+                optionsContainer.appendChild(optionElement);
+            }
+
+            // Function to add a new option to a question
+            function addOptionToQuestion(questionElement) {
+                const optionsContainer = questionElement.querySelector('.options-list');
+                const questionIndex = parseInt(questionElement.querySelector('.question-number').textContent) - 1;
+                const optionIndex = optionsContainer.children.length;
+
+                const optionWrapper = document.createElement('div');
+                optionWrapper.innerHTML = optionTemplate;
+                const optionElement = optionWrapper.firstElementChild;
+
+                // Add hidden input for option ID (0 for new options)
+                const optionIdInput = optionElement.querySelector('.option-id');
+                optionIdInput.name = `Survey.Questions[${questionIndex}].Options[${optionIndex}].AnswerOptionId`;
+                optionIdInput.value = 0;
+
+                const optionTextInput = optionElement.querySelector('.option-text');
+                optionTextInput.name = `Survey.Questions[${questionIndex}].Options[${optionIndex}].OptionText`;
+
+                // Set up event listener for remove button
+                const removeOptionBtn = optionElement.querySelector('.remove-option-btn');
+                removeOptionBtn.addEventListener('click', function() {
+                    if (optionsContainer.children.length > 2 ||
+                       (optionsContainer.children.length === 1 &&
+                        (questionElement.querySelector('.question-type').value !== '1' &&
+                         questionElement.querySelector('.question-type').value !== '2' &&
+                         questionElement.querySelector('.question-type').value !== '6'))) {
+                        optionElement.remove();
+                        updateOptionsIndexes(questionElement);
+                    } else if (optionsContainer.children.length === 2 &&
+                              (questionElement.querySelector('.question-type').value === '1' ||
+                               questionElement.querySelector('.question-type').value === '2' ||
+                               questionElement.querySelector('.question-type').value === '6')) {
+                        alert('Choice questions require at least two options.');
+                    } else {
+                        optionElement.remove();
+                        updateOptionsIndexes(questionElement);
+                    }
+                });
+
+                optionsContainer.appendChild(optionElement);
+                optionTextInput.focus();
+            }
+
+            function removeQuestion(questionElement) {
+                questionElement.remove();
+                updateQuestionNumbers();
+                if (questionsContainer.querySelectorAll('.question-item').length === 0) {
+                    noQuestionsMessage.style.display = 'block';
+                }
+            }
+
+            function moveQuestionUp(questionElement) {
+                const previousQuestion = questionElement.previousElementSibling;
+                if (previousQuestion && previousQuestion.classList.contains('question-item')) {
+                    questionsContainer.insertBefore(questionElement, previousQuestion);
+                    updateQuestionNumbers();
+                }
+            }
+
+            function moveQuestionDown(questionElement) {
+                const nextQuestion = questionElement.nextElementSibling;
+                if (nextQuestion && nextQuestion.classList.contains('question-item')) {
+                    questionsContainer.insertBefore(nextQuestion, questionElement);
+                    updateQuestionNumbers();
+                }
+            }
+
+            function updateQuestionNumbers() {
+                const questions = questionsContainer.querySelectorAll('.question-item');
+                questions.forEach((question, index) => {
+                    question.querySelector('.question-number').textContent = index + 1;
+
+                    // Update question ID field name
+                    const questionIdInput = question.querySelector('.question-id');
+                    if (questionIdInput) {
+                        questionIdInput.name = `Survey.Questions[${index}].QuestionId`;
+                    }
+
+                    // Update other field names
+                    const questionTextInput = question.querySelector('.question-text');
+                    questionTextInput.name = `Survey.Questions[${index}].QuestionText`;
+
+                    const questionTypeInput = question.querySelector('.question-type');
+                    questionTypeInput.name = `Survey.Questions[${index}].QuestionType`;
+
+                    const questionRequiredInput = question.querySelector('.question-required');
+                    questionRequiredInput.name = `Survey.Questions[${index}].IsRequired`;
+
+                    updateOptionsIndexes(question, index);
+                });
+            }
+
+            function updateOptionsIndexes(questionElement, questionIndexOverride) {
+                const questionIndex = questionIndexOverride !== undefined
+                                    ? questionIndexOverride
+                                    : parseInt(questionElement.querySelector('.question-number').textContent) - 1;
+                const optionsList = questionElement.querySelector('.options-list');
+                const options = optionsList.querySelectorAll('.option-item');
+                options.forEach((option, optionIdx) => {
+                    // Update option ID field name
+                    const optionIdInput = option.querySelector('.option-id');
+                    if (optionIdInput) {
+                        optionIdInput.name = `Survey.Questions[${questionIndex}].Options[${optionIdx}].AnswerOptionId`;
+                    }
+
+                    // Update option text field name
+                    const optionTextInput = option.querySelector('.option-text');
+                    optionTextInput.name = `Survey.Questions[${questionIndex}].Options[${optionIdx}].OptionText`;
+                });
+            }
+
+            function updateOptionsVisibility(questionElement, questionType) {
+                const optionsContainer = questionElement.querySelector('.answer-options-container');
+                const optionsList = questionElement.querySelector('.options-list');
+                const currentOptionCount = optionsList.children.length;
+
+                // Show options container for choice-based questions
+                if (questionType === '1' || questionType === '2' || questionType === '6') {
+                    optionsContainer.style.display = 'block';
+                    if (currentOptionCount === 0) {
+                        addOptionToQuestion(questionElement);
+                        addOptionToQuestion(questionElement);
+                    } else if (currentOptionCount === 1) {
+                        addOptionToQuestion(questionElement);
+                    }
+                } else {
+                    // Hide and clear options for non-choice questions
+                    optionsContainer.style.display = 'none';
+                    while (optionsList.firstChild) {
+                        optionsList.removeChild(optionsList.firstChild);
+                    }
+                }
+            }
+
+            // Form validation before submission
+            document.getElementById('surveyForm').addEventListener('submit', function(event) {
+                if (questionsContainer.querySelectorAll('.question-item').length === 0) {
+                    event.preventDefault();
+                    alert('You must add at least one question to your survey.');
+                    return false;
+                }
+
+                let isValid = true;
+                const allQuestions = questionsContainer.querySelectorAll('.question-item');
+                allQuestions.forEach((question, index) => {
+                    const questionText = question.querySelector('.question-text').value.trim();
+                    if (!questionText) {
+                        isValid = false;
+                        alert(`Question ${index + 1} requires text.`);
+                    }
+
+                    const questionType = question.querySelector('.question-type').value;
+                    if (questionType === '1' || questionType === '2' || questionType === '6') {
+                        const options = question.querySelectorAll('.option-text');
+                        if (options.length < 2) {
+                             isValid = false;
+                             alert(`Question ${index + 1} (a choice-based question) requires at least two options.`);
+                        }
+                        options.forEach((option, optIndex) => {
+                            if (!option.value.trim()) {
+                                isValid = false;
+                                alert(`Option ${optIndex + 1} in Question ${index + 1} requires text.`);
+                            }
+                        });
+                    }
+                });
+
+                if (!isValid) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
+}
