@@ -34,7 +34,6 @@ namespace VoxPopuli.Pages.Surveys
 
         public void OnGet()
         {
-            // Default values already set in the view model constructor
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -48,7 +47,6 @@ namespace VoxPopuli.Pages.Surveys
                 return Page();
             }
 
-            // Get the current user ID
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (string.IsNullOrEmpty(userId))
@@ -58,7 +56,6 @@ namespace VoxPopuli.Pages.Surveys
                 return Page();
             }
 
-            // Verify user exists in database
             var user = await _context.Users.FindAsync(userId);
             if (user == null)
             {
@@ -70,7 +67,6 @@ namespace VoxPopuli.Pages.Surveys
             try
             {
 
-                // Add debugging for questions and options
                 if (Survey.Questions != null)
                 {
                     foreach (var q in Survey.Questions)
@@ -87,7 +83,6 @@ namespace VoxPopuli.Pages.Surveys
                         }
                     }
                 }
-                // Create the survey directly without using AutoMapper
                 var surveyEntity = new Survey
                 {
                     Title = Survey.Title,
@@ -98,16 +93,13 @@ namespace VoxPopuli.Pages.Surveys
                     EndDate = Survey.EndDate,
                     IsActive = Survey.IsActive,
                     AllowAnonymous = Survey.AllowAnonymous,
-                    // Hash password if provided
                     PasswordHash = !string.IsNullOrEmpty(Survey.Password) ?
                         BCrypt.Net.BCrypt.HashPassword(Survey.Password) : null
                 };
 
-                // Save the survey first to get its ID
                 _context.Surveys.Add(surveyEntity);
                 await _context.SaveChangesAsync();
 
-                // Now add questions and their options
                 if (Survey.Questions != null && Survey.Questions.Any())
                 {
                     int questionOrder = 0;
@@ -123,10 +115,8 @@ namespace VoxPopuli.Pages.Surveys
                         };
 
                         _context.Questions.Add(question);
-                        // Save to get the QuestionId
                         await _context.SaveChangesAsync();
 
-                        // Add options for choice-based questions
                         if ((questionVM.QuestionType == QuestionType.SingleChoice ||
                              questionVM.QuestionType == QuestionType.MultipleChoice) &&
                             questionVM.Options != null && questionVM.Options.Any())
@@ -137,7 +127,7 @@ namespace VoxPopuli.Pages.Surveys
                                 var option = new AnswerOption
                                 {
                                     QuestionId = question.QuestionId,
-                                    OptionText = optionVM.OptionText, // Change from optionVM.Text to optionVM.OptionText
+                                    OptionText = optionVM.OptionText,      
                                     Order = optionOrder++
                                 };
 
@@ -148,7 +138,6 @@ namespace VoxPopuli.Pages.Surveys
                     }
                 }
 
-                // Add success message to TempData
                 TempData["SuccessMessage"] = $"Survey '{surveyEntity.Title}' has been created successfully!";
                 TempData["NewSurveyId"] = surveyEntity.SurveyId;
 

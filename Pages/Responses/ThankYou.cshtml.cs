@@ -30,7 +30,6 @@ namespace VoxPopuli.Pages.Responses
                 return NotFound();
             }
 
-            // Retrieve the response with careful null handling
             var response = await _context.Responses
                 .Include(r => r.Survey)
                 .FirstOrDefaultAsync(r => r.ResponseId == Id);

@@ -104,7 +104,6 @@
                 </button>
             </div>
             <div class="card-body p-lg-4" id="questionsContainer">
-                <!-- Questions will be loaded here -->
                 <div class="text-center py-5 rounded-3" id="noQuestionsMessage" style="background-color: var(--bs-tertiary-bg); display: none;">
                     <i class="bi bi-clipboard-plus display-3 text-muted mb-3"></i>
                     <h4 class="mb-2 fw-normal">Your survey needs questions!</h4>
@@ -126,7 +125,6 @@
     </form>
 </div>
 
-<!-- Templates for dynamic content -->
 <div class="question-template d-none">
     <div class="question-item card mb-3 border-start border-primary border-4 shadow-sm">
         <div class="card-header bg-light-subtle d-flex justify-content-between align-items-center py-2 px-3">
@@ -196,21 +194,17 @@
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Get references to key elements
             const addQuestionBtn = document.getElementById('addQuestionBtn');
             const questionsContainer = document.getElementById('questionsContainer');
             const noQuestionsMessage = document.getElementById('noQuestionsMessage');
             const questionTemplate = document.querySelector('.question-template').innerHTML;
             const optionTemplate = document.querySelector('.option-template').innerHTML;
 
-            // Track how many questions have been added
             let questionCounter = 0;
 
-            // Initialize the form - hide templates that shouldn't be rendered
             document.querySelector('.question-template').remove();
             document.querySelector('.option-template').remove();
 
-            // Load existing questions from model
             const existingQuestions = @Html.Raw(Json.Serialize(Model.Survey.Questions ?? new List<VoxPopuli.Models.ViewModels.Questions.QuestionViewModel>()));
             if (existingQuestions && existingQuestions.length > 0) {
                 existingQuestions.forEach(question => {
@@ -220,42 +214,32 @@
                 noQuestionsMessage.style.display = 'block';
             }
 
-            // Add question button click handler
             addQuestionBtn.addEventListener('click', function() {
-                // Hide the "no questions" message
                 noQuestionsMessage.style.display = 'none';
-                // Create a new question element
                 addNewQuestion();
             });
 
-            // Function to add an existing question from the model
             function addExistingQuestion(questionData) {
                 questionCounter++;
 
-                // Create a new question wrapper
                 const questionWrapper = document.createElement('div');
                 questionWrapper.innerHTML = questionTemplate;
                 const questionElement = questionWrapper.firstElementChild;
 
-                // Update question number
                 questionElement.querySelector('.question-number').textContent = questionCounter;
 
-                // Set question ID if it exists
                 const questionIdInput = questionElement.querySelector('.question-id');
                 questionIdInput.name = `Survey.Questions[${questionCounter - 1}].QuestionId`;
                 questionIdInput.value = questionData.questionId || 0;
 
-                // Set question text
                 const questionTextInput = questionElement.querySelector('.question-text');
                 questionTextInput.name = `Survey.Questions[${questionCounter - 1}].QuestionText`;
                 questionTextInput.value = questionData.questionText || '';
 
-                // Set question type
                 const questionTypeSelect = questionElement.querySelector('.question-type');
                 questionTypeSelect.name = `Survey.Questions[${questionCounter - 1}].QuestionType`;
                 questionTypeSelect.value = questionData.questionType || 1;
 
-                // Set required status
                 const questionRequiredInput = questionElement.querySelector('.question-required');
                 const uniqueId = 'question_' + questionCounter + '_required';
                 questionRequiredInput.id = uniqueId;
@@ -264,18 +248,15 @@
                 questionRequiredInput.checked = questionData.isRequired !== false;
                 questionRequiredInput.nextElementSibling.setAttribute('for', uniqueId);
 
-                // Add event listeners for the question type dropdown
                 questionTypeSelect.addEventListener('change', function() {
                     updateOptionsVisibility(questionElement, this.value);
                 });
 
-                // Add event listener for adding options
                 const addOptionBtn = questionElement.querySelector('.add-option-btn');
                 addOptionBtn.addEventListener('click', function() {
                     addOptionToQuestion(questionElement);
                 });
 
-                // Add event listeners for question action buttons
                 const removeBtn = questionElement.querySelector('.remove-question-btn');
                 removeBtn.addEventListener('click', function() {
                     removeQuestion(questionElement);
@@ -291,32 +272,26 @@
                     moveQuestionDown(questionElement);
                 });
 
-                // Add options if they exist
                 if (questionData.options && questionData.options.length > 0) {
                     questionData.options.forEach(option => {
                         addExistingOptionToQuestion(questionElement, option);
                     });
                 }
 
-                // Update options visibility based on question type
                 updateOptionsVisibility(questionElement, questionTypeSelect.value);
 
                 questionsContainer.appendChild(questionElement);
             }
 
-            // Function to add a new question
             function addNewQuestion() {
                 questionCounter++;
 
-                // Create a new question wrapper
                 const questionWrapper = document.createElement('div');
                 questionWrapper.innerHTML = questionTemplate;
                 const questionElement = questionWrapper.firstElementChild;
 
-                // Update question number
                 questionElement.querySelector('.question-number').textContent = questionCounter;
 
-                // Set unique IDs for form elements
                 const questionIdInput = questionElement.querySelector('.question-id');
                 questionIdInput.name = `Survey.Questions[${questionCounter - 1}].QuestionId`;
                 questionIdInput.value = 0;
@@ -328,20 +303,17 @@
                 requiredSwitch.value = "true";
                 requiredSwitch.nextElementSibling.setAttribute('for', uniqueId);
 
-                // Add event listeners for the question type dropdown
                 const questionTypeSelect = questionElement.querySelector('.question-type');
                 questionTypeSelect.name = `Survey.Questions[${questionCounter - 1}].QuestionType`;
                 questionTypeSelect.addEventListener('change', function() {
                     updateOptionsVisibility(questionElement, this.value);
                 });
 
-                // Add event listener for adding options
                 const addOptionBtn = questionElement.querySelector('.add-option-btn');
                 addOptionBtn.addEventListener('click', function() {
                     addOptionToQuestion(questionElement);
                 });
 
-                // Add event listeners for question action buttons
                 const removeBtn = questionElement.querySelector('.remove-question-btn');
                 removeBtn.addEventListener('click', function() {
                     removeQuestion(questionElement);
@@ -357,18 +329,15 @@
                     moveQuestionDown(questionElement);
                 });
 
-                // Add hidden inputs to store the question data for form submission
                 const questionTextInput = questionElement.querySelector('.question-text');
                 questionTextInput.name = `Survey.Questions[${questionCounter - 1}].QuestionText`;
 
-                // Initialize the question type and add default options
                 updateOptionsVisibility(questionElement, questionTypeSelect.value);
 
                 questionsContainer.appendChild(questionElement);
                 questionTextInput.focus();
             }
 
-            // Function to add an existing option to a question
             function addExistingOptionToQuestion(questionElement, optionData) {
                 const optionsContainer = questionElement.querySelector('.options-list');
                 const questionIndex = parseInt(questionElement.querySelector('.question-number').textContent) - 1;
@@ -378,17 +347,14 @@
                 optionWrapper.innerHTML = optionTemplate;
                 const optionElement = optionWrapper.firstElementChild;
 
-                // Set option ID
                 const optionIdInput = optionElement.querySelector('.option-id');
                 optionIdInput.name = `Survey.Questions[${questionIndex}].Options[${optionIndex}].AnswerOptionId`;
                 optionIdInput.value = optionData.answerOptionId || 0;
 
-                // Set option text
                 const optionTextInput = optionElement.querySelector('.option-text');
                 optionTextInput.name = `Survey.Questions[${questionIndex}].Options[${optionIndex}].OptionText`;
                 optionTextInput.value = optionData.optionText || '';
 
-                // Set up event listener for remove button
                 const removeOptionBtn = optionElement.querySelector('.remove-option-btn');
                 removeOptionBtn.addEventListener('click', function() {
                     if (optionsContainer.children.length > 2 ||
@@ -412,7 +378,6 @@
                 optionsContainer.appendChild(optionElement);
             }
 
-            // Function to add a new option to a question
             function addOptionToQuestion(questionElement) {
                 const optionsContainer = questionElement.querySelector('.options-list');
                 const questionIndex = parseInt(questionElement.querySelector('.question-number').textContent) - 1;
@@ -422,7 +387,6 @@
                 optionWrapper.innerHTML = optionTemplate;
                 const optionElement = optionWrapper.firstElementChild;
 
-                // Add hidden input for option ID (0 for new options)
                 const optionIdInput = optionElement.querySelector('.option-id');
                 optionIdInput.name = `Survey.Questions[${questionIndex}].Options[${optionIndex}].AnswerOptionId`;
                 optionIdInput.value = 0;
@@ -430,7 +394,6 @@
                 const optionTextInput = optionElement.querySelector('.option-text');
                 optionTextInput.name = `Survey.Questions[${questionIndex}].Options[${optionIndex}].OptionText`;
 
-                // Set up event listener for remove button
                 const removeOptionBtn = optionElement.querySelector('.remove-option-btn');
                 removeOptionBtn.addEventListener('click', function() {
                     if (optionsContainer.children.length > 2 ||
@@ -484,13 +447,11 @@
                 questions.forEach((question, index) => {
                     question.querySelector('.question-number').textContent = index + 1;
 
-                    // Update question ID field name
                     const questionIdInput = question.querySelector('.question-id');
                     if (questionIdInput) {
                         questionIdInput.name = `Survey.Questions[${index}].QuestionId`;
                     }
 
-                    // Update other field names
                     const questionTextInput = question.querySelector('.question-text');
                     questionTextInput.name = `Survey.Questions[${index}].QuestionText`;
 
@@ -511,13 +472,11 @@
                 const optionsList = questionElement.querySelector('.options-list');
                 const options = optionsList.querySelectorAll('.option-item');
                 options.forEach((option, optionIdx) => {
-                    // Update option ID field name
                     const optionIdInput = option.querySelector('.option-id');
                     if (optionIdInput) {
                         optionIdInput.name = `Survey.Questions[${questionIndex}].Options[${optionIdx}].AnswerOptionId`;
                     }
 
-                    // Update option text field name
                     const optionTextInput = option.querySelector('.option-text');
                     optionTextInput.name = `Survey.Questions[${questionIndex}].Options[${optionIdx}].OptionText`;
                 });
@@ -528,7 +487,6 @@
                 const optionsList = questionElement.querySelector('.options-list');
                 const currentOptionCount = optionsList.children.length;
 
-                // Show options container for choice-based questions
                 if (questionType === '1' || questionType === '2' || questionType === '6') {
                     optionsContainer.style.display = 'block';
                     if (currentOptionCount === 0) {
@@ -538,7 +496,6 @@
                         addOptionToQuestion(questionElement);
                     }
                 } else {
-                    // Hide and clear options for non-choice questions
                     optionsContainer.style.display = 'none';
                     while (optionsList.firstChild) {
                         optionsList.removeChild(optionsList.firstChild);
@@ -546,7 +503,6 @@
                 }
             }
 
-            // Form validation before submission
             document.getElementById('surveyForm').addEventListener('submit', function(event) {
                 if (questionsContainer.querySelectorAll('.question-item').length === 0) {
                     event.preventDefault();

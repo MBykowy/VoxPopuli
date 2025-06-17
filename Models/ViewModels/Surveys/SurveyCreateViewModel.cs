@@ -1,5 +1,4 @@
-﻿// Models/ViewModels/Surveys/SurveyCreateViewModel.cs
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using VoxPopuli.Models.ViewModels.Questions;
@@ -33,13 +32,11 @@ namespace VoxPopuli.Models.ViewModels.Surveys
 
         public bool AllowAnonymous { get; set; }
 
-        // Password for the survey (plain text)
         public string? Password { get; set; }
 
         public List<QuestionViewModel> Questions { get; set; }
     }
 
-    // Add other view models in the same namespace to avoid duplication
     public class SurveyEditViewModel
     {
         public SurveyEditViewModel()
@@ -66,7 +63,6 @@ namespace VoxPopuli.Models.ViewModels.Surveys
 
         public bool AllowAnonymous { get; set; }
 
-        // Password for the survey (plain text)
         public string? Password { get; set; }
 
         public List<QuestionViewModel> Questions { get; set; }

@@ -43,7 +43,6 @@
     </div>
 
     <div class="row mb-4">
-        <!-- Summary Cards -->
         <div class="col-md-3">
             <div class="card text-white bg-primary mb-3">
                 <div class="card-body">
@@ -79,7 +78,6 @@
     </div>
 
     <div class="row mb-4">
-        <!-- Response Trends Chart -->
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
@@ -90,7 +88,6 @@
                 </div>
             </div>
         </div>
-        <!-- Top Performing Surveys -->
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
@@ -104,7 +101,6 @@
     </div>
 
     <div class="row mb-4">
-        <!-- Response Distribution by Category -->
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
@@ -115,7 +111,6 @@
                 </div>
             </div>
         </div>
-        <!-- Sentiment Analysis -->
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
@@ -129,7 +124,6 @@
     </div>
 
     <div class="row">
-        <!-- Recent Activity -->
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
@@ -172,7 +166,6 @@
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Response Trends Chart
             const trendCtx = document.getElementById('responseTrends').getContext('2d');
             new Chart(trendCtx, {
                 type: 'line',
@@ -198,7 +191,6 @@
                 }
             });
 
-            // Top Performing Surveys
             const topCtx = document.getElementById('topSurveys').getContext('2d');
             new Chart(topCtx, {
                 type: 'bar',
@@ -229,7 +221,6 @@
                 }
             });
 
-            // Response Distribution Chart
             const distCtx = document.getElementById('responseDistribution').getContext('2d');
             new Chart(distCtx, {
                 type: 'doughnut',
@@ -253,7 +244,6 @@
                 }
             });
 
-            // Sentiment Analysis Chart
             const sentimentCtx = document.getElementById('sentimentAnalysis').getContext('2d');
             new Chart(sentimentCtx, {
                 type: 'radar',
@@ -285,7 +275,6 @@
                 }
             });
 
-            // Toggle between time periods
             document.getElementById('viewWeekly').addEventListener('click', function() {
                 window.location.href = '?period=weekly';
             });

@@ -31,7 +31,6 @@ namespace VoxPopuli.Pages.Surveys
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // For admins, show all surveys, for regular users show only their own
             var query = User.IsInRole("Admin")
                 ? _context.Surveys
                 : _context.Surveys.Where(s => s.CreatorUserId == userId);
@@ -65,7 +64,6 @@ namespace VoxPopuli.Pages.Surveys
                 return NotFound();
             }
 
-            // Only allow deletion by creator or admin
             if (survey.CreatorUserId != userId && !User.IsInRole("Admin"))
             {
                 return Forbid();

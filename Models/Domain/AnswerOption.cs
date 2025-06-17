@@ -27,7 +27,6 @@ namespace VoxPopuli.Models.Domain
         [Required]
         public int Order { get; set; }
 
-        // Navigation properties
         public virtual ICollection<Answer> Answers { get; set; }
     }
 

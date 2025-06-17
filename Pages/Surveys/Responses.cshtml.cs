@@ -21,7 +21,7 @@ namespace VoxPopuli.Pages.Surveys
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<ResponsesModel> _logger;
-        private readonly IMapper _mapper; // Added missing mapper
+        private readonly IMapper _mapper;    
 
         public ResponsesModel(ApplicationDbContext context, ILogger<ResponsesModel> logger, IMapper mapper)
         {
@@ -31,23 +31,16 @@ namespace VoxPopuli.Pages.Surveys
         }
 
 
-        // Change from async method name to match the form handler name exactly
         public IActionResult OnPostExportResponsesPdf()
         {
-            // The Id property is already bound from the route
-            // No need to reload it manually
-
-            // Load the data
             var result = OnGetAsync().GetAwaiter().GetResult();
             if (result is NotFoundResult)
                 return NotFound();
 
             var pdfService = HttpContext.RequestServices.GetRequiredService<VoxPopuli.Services.PDF.PdfExportService>();
 
-            // Generate PDF
             byte[] pdfBytes = pdfService.GenerateSurveyResponsesPdf(SurveyResponses);
 
-            // Return as downloadable file
             return File(
                 pdfBytes,
                 "application/pdf",
@@ -57,11 +50,10 @@ namespace VoxPopuli.Pages.Surveys
         [BindProperty(SupportsGet = true)]
         public int Id { get; set; }
 
-        public SurveyResponsesViewModel SurveyResponses { get; set; } = new(); // Initialize to avoid null reference
+        public SurveyResponsesViewModel SurveyResponses { get; set; } = new();      
 
         public async Task<IActionResult> OnGetAsync()
         {
-            // Use the Id property that's bound from the route
             var survey = await _context.Surveys
                 .Include(s => s.Responses)
                     .ThenInclude(r => r.Answers)
@@ -76,7 +68,6 @@ namespace VoxPopuli.Pages.Surveys
                 return NotFound();
             }
 
-            // Verify the user has permission to view this survey's responses
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (survey.CreatorUserId != currentUserId && !User.IsInRole("Admin"))
             {
@@ -84,7 +75,6 @@ namespace VoxPopuli.Pages.Surveys
                 return Forbid();
             }
 
-            // Create the view model manually since we're having issues with AutoMapper
             SurveyResponses = new SurveyResponsesViewModel
             {
                 SurveyId = survey.SurveyId,
@@ -95,7 +85,6 @@ namespace VoxPopuli.Pages.Surveys
                 Responses = new List<ResponseDetailViewModel>()
             };
 
-            // Map each response
             if (survey.Responses != null)
             {
                 foreach (var response in survey.Responses)
@@ -110,7 +99,6 @@ namespace VoxPopuli.Pages.Surveys
                         Answers = new List<ResponseAnswerViewModel>()
                     };
 
-                    // Map answers for this response
                     if (response.Answers != null)
                     {
                         foreach (var answer in response.Answers)
@@ -132,25 +120,20 @@ namespace VoxPopuli.Pages.Surveys
                 }
             }
 
-            // Add this code to populate the chart data
             if (SurveyResponses.Responses.Any())
             {
                 var dateGroups = SurveyResponses.Responses
                     .GroupBy(r => r.SubmittedAt.Date)
                     .Select(g => new ResponseDateCount
                     {
-                        // Store date in culture-invariant format that matches our parsing
                         Date = g.Key.ToString("MMM dd", CultureInfo.InvariantCulture),
                         Count = g.Count()
                     })
-                    // Sort chronologically by the actual DateTime instead of parsing the string
                     .OrderBy(x => DateTime.Parse(x.Date, CultureInfo.InvariantCulture))
                     .ToList();
 
                 SurveyResponses.ResponseDateCounts = dateGroups;
 
-                // Calculate completion rate and average time based on available data
-                // These are placeholders - in a real app you would compute these from actual data
                 SurveyResponses.CompletionRate = 92;
                 SurveyResponses.AvgCompletionTime = "2.5";
             }

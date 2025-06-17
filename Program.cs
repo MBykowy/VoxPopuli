@@ -1,7 +1,6 @@
-// Add these using directives at the top of your Program.cs file
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.UI; // Add this line
+using Microsoft.AspNetCore.Identity.UI;    
 using Serilog;
 using Serilog.Events;
 using System;
@@ -15,12 +14,10 @@ using VoxPopuli.Models.ViewModels.Surveys;
 using VoxPopuli.Services;
 using QuestPDF.Infrastructure;
 
-// Add this near the beginning of Program.cs, before app builder configuration
 QuestPDF.Settings.License = LicenseType.Community;
 
 
 
-// At the top of Program.cs, before var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
@@ -36,7 +33,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
 
 
-// Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
     throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -44,14 +40,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-// After other service registrations
 builder.Services.AddScoped<VoxPopuli.Services.PDF.PdfExportService>();
-// Replace this:
-// builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-//     .AddRoles<IdentityRole>()
-//     .AddEntityFrameworkStores<ApplicationDbContext>();
-
-// With this:
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders()
@@ -59,11 +48,9 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.Sign
 builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 
-// Register our mapping services and the AutoMapper adapter
 builder.Services.AddSingleton<ISurveyMapper, SurveyMapper>();
 builder.Services.AddSingleton<IResponseMapper, ResponseMapper>();
 
-// Register AutoMapper-compatible implementation
 builder.Services.AddSingleton<AutoMapper.IMapper>(sp =>
     new AutoMapperCompatibilityAdapter(
         sp.GetRequiredService<ISurveyMapper>(),
@@ -73,7 +60,6 @@ builder.Services.AddSingleton<AutoMapper.IMapper>(sp =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -81,15 +67,12 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 
-// Add this after app.Build() and before app.Run()
 if (app.Environment.IsDevelopment())
 {
-    // Initialize roles for development
     await RoleInitializer.InitializeRoles(app.Services);
 
     app.UseMigrationsEndPoint();
@@ -113,8 +96,6 @@ app.MapRazorPages();
 
 app.Run();
 
-// Custom interfaces for mapping operations
-// Custom interfaces for mapping operations
 public interface ISurveyMapper
 {
     TakeSurveyViewModel MapToTakeSurveyViewModel(Survey survey);
@@ -131,8 +112,6 @@ public interface IResponseMapper
     VoxPopuli.Mappings.ResponseViewModel MapToViewModel(Response response);
 }
 
-// Implementation of the survey mapper
-// Implementation of the survey mapper
 public class SurveyMapper : ISurveyMapper
 {
     public TakeSurveyViewModel MapToTakeSurveyViewModel(Survey survey)
@@ -151,7 +130,6 @@ public class SurveyMapper : ISurveyMapper
 
         if (survey.Questions != null)
         {
-            // Convert from Questions namespace to Responses namespace
             viewModel.Questions = survey.Questions
                 .OrderBy(q => q.Order)
                 .Select(q => new VoxPopuli.Models.ViewModels.Responses.QuestionViewModel
@@ -174,8 +152,6 @@ public class SurveyMapper : ISurveyMapper
 
         return viewModel;
     }
-
-    // Rest of the class remains the same...
 
 public SurveyResultViewModel MapToSurveyResultViewModel(Survey survey)
     {
@@ -349,7 +325,6 @@ public SurveyResultViewModel MapToSurveyResultViewModel(Survey survey)
     }
 }
 
-// Implementation of the response mapper
 public class ResponseMapper : IResponseMapper
 {
     public VoxPopuli.Mappings.ResponseViewModel MapToViewModel(Response response)
@@ -368,7 +343,6 @@ public class ResponseMapper : IResponseMapper
     }
 }
 
-// AutoMapper compatibility adapter
 public class AutoMapperCompatibilityAdapter : AutoMapper.IMapper
 {
     private readonly ISurveyMapper _surveyMapper;
@@ -390,44 +364,34 @@ public class AutoMapperCompatibilityAdapter : AutoMapper.IMapper
         if (source == null)
             return default;
 
-        // Survey -> TakeSurveyViewModel
         if (source is Survey survey && typeof(TDestination) == typeof(TakeSurveyViewModel))
             return (TDestination)(object)_surveyMapper.MapToTakeSurveyViewModel(survey);
 
-        // Survey -> SurveyResultViewModel
         if (source is Survey surveySR && typeof(TDestination) == typeof(SurveyResultViewModel))
             return (TDestination)(object)_surveyMapper.MapToSurveyResultViewModel(surveySR);
 
-        // Survey -> SurveyDetailsViewModel
         if (source is Survey surveySD && typeof(TDestination) == typeof(SurveyDetailsViewModel))
             return (TDestination)(object)_surveyMapper.MapToDetailsViewModel(surveySD);
 
-        // Survey -> SurveyListItemViewModel
         if (source is Survey surveySL && typeof(TDestination) == typeof(SurveyListItemViewModel))
             return (TDestination)(object)_surveyMapper.MapToListItemViewModel(surveySL);
        
-        // Question -> QuestionViewModel
         if (source is Question question && typeof(TDestination) == typeof(VoxPopuli.Models.ViewModels.Questions.QuestionViewModel))
             return (TDestination)(object)_surveyMapper.MapToViewModel(question);
 
-        // Response -> ResponseViewModel
         if (source is Response response && typeof(TDestination) == typeof(VoxPopuli.Mappings.ResponseViewModel))
             return (TDestination)(object)_responseMapper.MapToViewModel(response);
 
-        // SurveyCreateViewModel -> Survey
         if (source is SurveyCreateViewModel createVM && typeof(TDestination) == typeof(Survey))
             return (TDestination)(object)_surveyMapper.MapToEntity(createVM);
 
-        // SurveyEditViewModel -> Survey
         if (source is SurveyEditViewModel editVM && typeof(TDestination) == typeof(Survey))
             return (TDestination)(object)_surveyMapper.MapToEntity(editVM);
 
 
-        // QuestionViewModel -> Question
         if (source is VoxPopuli.Models.ViewModels.Questions.QuestionViewModel questionVM && typeof(TDestination) == typeof(Question))
             return (TDestination)(object)_surveyMapper.MapToEntity(questionVM);
 
-        // Default: try to create an instance of the destination type
         try
         {
             return Activator.CreateInstance<TDestination>();
@@ -440,7 +404,6 @@ public class AutoMapperCompatibilityAdapter : AutoMapper.IMapper
 
     public TDestination Map<TSource, TDestination>(TSource source, TDestination destination)
     {
-        // For simplicity in this implementation
         return destination;
     }
 
@@ -461,7 +424,6 @@ public class AutoMapperCompatibilityAdapter : AutoMapper.IMapper
         return destination;
     }
 
-    // Required IMapper interface implementations with minimal functionality
     public AutoMapper.IConfigurationProvider ConfigurationProvider => null;
 
     public Func<Type, object> ServiceCtor => type => null;
@@ -491,7 +453,6 @@ public class AutoMapperCompatibilityAdapter : AutoMapper.IMapper
         return Map(source, destination, sourceType, destinationType);
     }
 
-    // These methods throw exceptions as they're not needed for our basic mapping
     public System.Linq.IQueryable<TDestination> ProjectTo<TDestination>(System.Linq.IQueryable source, object parameters = null, params System.Linq.Expressions.Expression<Func<TDestination, object>>[] membersToExpand)
     {
         throw new NotImplementedException("ProjectTo is not supported in this implementation");

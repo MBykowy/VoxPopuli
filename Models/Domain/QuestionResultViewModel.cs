@@ -22,17 +22,13 @@ namespace VoxPopuli.Models.ViewModels.Surveys
 
         public int ResponseCount { get; set; }
 
-        // For choice-based questions (SingleChoice and MultipleChoice)
         public List<OptionResultViewModel> Options { get; set; }
 
-        // For text questions
         public List<string> TextResponses { get; set; }
 
-        // For rating questions
         public double? AverageRating { get; set; }
         public Dictionary<int, int> RatingDistribution { get; set; }
 
-        // For chart data
         public ChartDataViewModel ChartData { get; set; }
     }
 }

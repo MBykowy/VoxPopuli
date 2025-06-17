@@ -42,7 +42,6 @@ namespace VoxPopuli.Pages.Admin.Roles
                 return Page();
             }
 
-            // Check if role already exists
             if (await _roleManager.RoleExistsAsync(NewRoleName))
             {
                 ModelState.AddModelError(string.Empty, $"Role '{NewRoleName}' already exists.");
@@ -50,7 +49,6 @@ namespace VoxPopuli.Pages.Admin.Roles
                 return Page();
             }
 
-            // Create the role
             var result = await _roleManager.CreateAsync(new IdentityRole(NewRoleName));
 
             if (result.Succeeded)
@@ -77,7 +75,6 @@ namespace VoxPopuli.Pages.Admin.Roles
                 return NotFound();
             }
 
-            // Don't allow deleting Admin role for safety
             if (role.Name == "Admin")
             {
                 StatusMessage = "The Admin role cannot be deleted.";

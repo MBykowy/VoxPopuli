@@ -31,7 +31,6 @@ namespace VoxPopuli.Services
 
         private static async Task EnsureAdminUserCreated(UserManager<IdentityUser> userManager)
         {
-            // Only in development for quick setup
             const string adminEmail = "admin@voxpopuli.com";
             const string adminPassword = "Admin123!";
 

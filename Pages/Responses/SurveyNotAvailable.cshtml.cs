@@ -10,7 +10,6 @@ namespace VoxPopuli.Pages.Responses
 
         public void OnGet()
         {
-            // Message already set through binding
         }
     }
 }

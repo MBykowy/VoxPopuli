@@ -1,4 +1,3 @@
-// Pages/Surveys/Results.cshtml.cs
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -36,13 +35,10 @@ namespace VoxPopuli.Pages.Surveys
         public int Id { get; set; }
 
         public SurveyResultViewModel? SurveyResult { get; set; }
-        // Add these methods to your ResultsModel class
-
         public IActionResult OnPostExportPdfAsync()
         {
             var pdfService = HttpContext.RequestServices.GetRequiredService<VoxPopuli.Services.PDF.PdfExportService>();
 
-            // Make sure we have the survey data
             if (SurveyResult == null)
             {
                 var result = OnGetAsync().GetAwaiter().GetResult();
@@ -50,10 +46,8 @@ namespace VoxPopuli.Pages.Surveys
                     return NotFound();
             }
 
-            // Generate the PDF
             byte[] pdfBytes = pdfService.GenerateSurveyResultPdf(SurveyResult);
 
-            // Return as a downloadable file
             return File(
                 pdfBytes,
                 "application/pdf",
@@ -74,7 +68,6 @@ namespace VoxPopuli.Pages.Surveys
                 return NotFound();
             }
 
-            // Check if the current user is allowed to view results
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (survey.CreatorUserId != currentUserId && !User.IsInRole("Admin"))
             {
@@ -82,7 +75,6 @@ namespace VoxPopuli.Pages.Surveys
                 return Forbid();
             }
 
-            // In your Results.cshtml.cs OnGetAsync method
             SurveyResult = _mapper.Map<SurveyResultViewModel>(survey);
 
             if (SurveyResult == null)
@@ -96,10 +88,8 @@ namespace VoxPopuli.Pages.Surveys
                 };
             }
 
-            // Make sure your ModelState is valid
             if (!ModelState.IsValid)
             {
-                // Log any validation errors
                 foreach (var modelState in ModelState.Values)
                 {
                     foreach (var error in modelState.Errors)
@@ -109,11 +99,8 @@ namespace VoxPopuli.Pages.Surveys
                 }
             }
 
-            // Process and aggregate answers for each question
             foreach (var question in survey.Questions.OrderBy(q => q.Order))
             {
-                // Logic to process different question types and aggregate results
-                // (Move the processing logic from your controller here)
             }
 
             return Page();

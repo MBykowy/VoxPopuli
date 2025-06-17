@@ -29,7 +29,6 @@ namespace VoxPopuli.Models.ViewModels.Questions
         [Display(Name = "Required")]
         public bool IsRequired { get; set; }
 
-        // For SingleChoice and MultipleChoice question types
         public List<AnswerOptionViewModel> Options { get; set; }
     }
 

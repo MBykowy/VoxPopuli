@@ -60,25 +60,21 @@ namespace VoxPopuli.Pages.Admin.Debug
                 return Page();
             }
 
-            // Ensure Admin role exists
             if (!await _roleManager.RoleExistsAsync("Admin"))
             {
                 await _roleManager.CreateAsync(new IdentityRole("Admin"));
             }
 
-            // Ensure Supervisor role exists
             if (!await _roleManager.RoleExistsAsync("Supervisor"))
             {
                 await _roleManager.CreateAsync(new IdentityRole("Supervisor"));
             }
 
-            // Add the user to Admin role
             if (!await _userManager.IsInRoleAsync(user, "Admin"))
             {
                 await _userManager.AddToRoleAsync(user, "Admin");
             }
 
-            // Add the user to Supervisor role
             if (!await _userManager.IsInRoleAsync(user, "Supervisor"))
             {
                 await _userManager.AddToRoleAsync(user, "Supervisor");

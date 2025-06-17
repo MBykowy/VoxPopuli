@@ -37,7 +37,6 @@ namespace VoxPopuli.Pages.Admin.Debug
 
         public async Task<IActionResult> OnGetAsync()
         {
-            // Only allow access in development mode
             if (!IsDevelopment)
                 return NotFound();
 
@@ -47,7 +46,6 @@ namespace VoxPopuli.Pages.Admin.Debug
 
         public async Task<IActionResult> OnPostAsync()
         {
-            // Only allow access in development mode
             if (!IsDevelopment)
                 return NotFound();
 
@@ -58,7 +56,6 @@ namespace VoxPopuli.Pages.Admin.Debug
                 return Page();
             }
 
-            // Find the user
             var user = await _userManager.FindByEmailAsync(Email);
             if (user == null)
             {
@@ -67,7 +64,6 @@ namespace VoxPopuli.Pages.Admin.Debug
                 return Page();
             }
 
-            // Create selected roles if they don't exist
             foreach (var role in AvailableRoles)
             {
                 if (role.IsSelected && !await _roleManager.RoleExistsAsync(role.Name))
@@ -76,10 +72,8 @@ namespace VoxPopuli.Pages.Admin.Debug
                 }
             }
 
-            // Get current roles
             var currentRoles = await _userManager.GetRolesAsync(user);
 
-            // Remove from unselected roles
             var rolesToRemove = currentRoles.Where(r =>
                 AvailableRoles.Any(ar => ar.Name == r && !ar.IsSelected)).ToList();
 
@@ -88,7 +82,6 @@ namespace VoxPopuli.Pages.Admin.Debug
                 await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
             }
 
-            // Add to selected roles
             var rolesToAdd = AvailableRoles
                 .Where(r => r.IsSelected && !currentRoles.Contains(r.Name))
                 .Select(r => r.Name)
@@ -108,10 +101,8 @@ namespace VoxPopuli.Pages.Admin.Debug
         {
             AvailableRoles = new List<RoleModel>();
 
-            // Add default roles
             string[] defaultRoles = { "Admin", "Supervisor" };
 
-            // Get existing roles first
             var existingRoles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
             var combinedRoles = defaultRoles.Union(existingRoles).Distinct();
 

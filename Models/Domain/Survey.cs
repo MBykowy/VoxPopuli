@@ -8,11 +8,9 @@ namespace VoxPopuli.Models.Domain
     {
         public Survey()
         {
-            // Initialize collections in constructor
             Questions = new List<Question>();
             Responses = new List<Response>();
 
-            // Initialize required string properties with empty strings
             Title = string.Empty;
             Description = string.Empty;
             CreatorUserId = string.Empty;
@@ -46,7 +44,6 @@ namespace VoxPopuli.Models.Domain
 
         public string? PasswordHash { get; set; }
 
-        // Navigation properties
         public virtual ICollection<Question> Questions { get; set; }
         public virtual ICollection<Response> Responses { get; set; }
     }

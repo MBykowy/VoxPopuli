@@ -56,7 +56,6 @@ namespace VoxPopuli.Pages.Responses
             if (survey == null)
                 return NotFound();
 
-            // Verify password
             bool passwordValid = BCrypt.Net.BCrypt.Verify(Password, survey.PasswordHash);
 
             if (!passwordValid)
@@ -65,7 +64,6 @@ namespace VoxPopuli.Pages.Responses
                 return await OnGetAsync();
             }
 
-            // Password is correct, redirect to survey
             return RedirectToPage("/Responses/Take", new { id = Id });
         }
     }

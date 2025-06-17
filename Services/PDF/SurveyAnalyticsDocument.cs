@@ -56,10 +56,8 @@ namespace VoxPopuli.Services.PDF
 
         private void ComposeHeader(IContainer container)
         {
-            // Use a column container to properly organize header elements vertically
             container.Column(column =>
             {
-                // First item contains the header content in a row
                 column.Item().Row(row =>
                 {
                     row.RelativeItem().Column(c =>
@@ -74,7 +72,6 @@ namespace VoxPopuli.Services.PDF
                     row.ConstantItem(100).Image(Placeholders.Image(100, 50));
                 });
 
-                // Second item is just for the border styling
                 column.Item().PaddingTop(5).BorderBottom(1).BorderColor(Colors.Black);
             });
         }
@@ -83,14 +80,11 @@ namespace VoxPopuli.Services.PDF
         {
             container.Column(column =>
             {
-                // Summary statistics
                 column.Item().Element(ComposeStatsSummary);
 
-                // Top performing surveys
                 column.Item().PaddingTop(20).Text("Top Performing Surveys").FontSize(16).Bold();
                 column.Item().Element(ComposeTopSurveys);
 
-                // Recent activity
                 column.Item().PaddingTop(20).Text("Recent Activity").FontSize(16).Bold();
                 column.Item().Element(ComposeRecentActivity);
             });

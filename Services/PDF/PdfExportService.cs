@@ -22,7 +22,6 @@ namespace VoxPopuli.Services.PDF
             }
             catch (Exception ex)
             {
-                // Log the exception
                 Console.WriteLine($"Error generating survey PDF: {ex.Message}");
                 throw new Exception("Failed to generate survey PDF report", ex);
             }
@@ -53,7 +52,6 @@ namespace VoxPopuli.Services.PDF
             }
             catch (Exception ex)
             {
-                // Log the exception
                 Console.WriteLine($"Error generating dashboard PDF: {ex.Message}");
                 throw new Exception("Failed to generate analytics dashboard PDF report", ex);
             }
@@ -70,12 +68,10 @@ namespace VoxPopuli.Services.PDF
             }
             catch (Exception ex)
             {
-                // Log the exception
                 Console.WriteLine($"Error generating responses PDF: {ex.Message}");
                 throw new Exception("Failed to generate survey responses PDF", ex);
             }
         }
-        // Helper method to save PDF to a file
         public async Task SavePdfToFileAsync(byte[] pdfData, string filePath)
         {
             await File.WriteAllBytesAsync(filePath, pdfData);

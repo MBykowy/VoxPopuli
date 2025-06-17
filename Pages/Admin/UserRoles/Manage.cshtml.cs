@@ -73,7 +73,6 @@ namespace VoxPopuli.Pages.Admin.UserRoles
 
             var userRoles = await _userManager.GetRolesAsync(user);
 
-            // Remove user from all roles
             var removeResult = await _userManager.RemoveFromRolesAsync(user, userRoles);
             if (!removeResult.Succeeded)
             {
@@ -84,7 +83,6 @@ namespace VoxPopuli.Pages.Admin.UserRoles
                 return Page();
             }
 
-            // Add user to selected roles
             var selectedRoles = Roles.Where(r => r.IsSelected).Select(r => r.RoleName);
             var addResult = await _userManager.AddToRolesAsync(user, selectedRoles);
 

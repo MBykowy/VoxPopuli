@@ -24,7 +24,6 @@
                             <a class="nav-link text-dark" asp-page="/Index">Home</a>
                         </li>
 
-                        <!-- Supervisor Analytics Dropdown -->
                         @if (User.IsInRole("Admin") || User.IsInRole("Supervisor"))
                         {
                             <li class="nav-item dropdown">
@@ -33,14 +32,12 @@
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarAnalytics">
                                     <li><a class="dropdown-item" asp-page="/Surveys/Dashboard">Survey Overview</a></li>
-                                    <li><a class="dropdown-item" asp-page="/Surveys/ResponseMetrics">Response Metrics</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" asp-page="/Surveys/List">All Surveys</a></li>
                                 </ul>
                             </li>
                         }
 
-                        <!-- Add this after the Analytics Dashboard dropdown, inside the same conditional check -->
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item dropdown">
@@ -51,12 +48,10 @@
                                     <li><a class="dropdown-item" asp-page="/Admin/UserRoles/Index">User Roles</a></li>
                                     <li><a class="dropdown-item" asp-page="/Admin/Roles/Index">Manage Roles</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" asp-page="/Admin/SystemSettings">System Settings</a></li>
                                 </ul>
                             </li>
                         }
 
-                        <!-- Regular Survey Menu -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarSurveys" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-clipboard-data"></i> Surveys
@@ -65,8 +60,6 @@
                                 <li><a class="dropdown-item" asp-page="/Surveys/Create">Create New Survey</a></li>
                                 <li><a class="dropdown-item" asp-page="/Surveys/List">My Surveys</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" asp-page="/Surveys/Results" asp-route-id="1">View Results</a></li>
-                                <li><a class="dropdown-item" asp-page="/Surveys/ExportResults" asp-route-id="1">Export Data</a></li>
                             </ul>
                         </li>
                     </ul>

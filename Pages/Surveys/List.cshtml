@@ -87,13 +87,6 @@
                                             <i class="bi bi-share me-2"></i> Share
                                         </a>
                                     </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-page="Preview" asp-route-id="@survey.SurveyId">
-                                            <i class="bi bi-eye me-2"></i> Preview
-                                        </a>
-                                    </li>
-                                    <!-- In the dropdown menu for each survey -->
-
 
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
@@ -110,7 +103,6 @@
             }
         </div>
 
-        <!-- Delete Confirmation Modal -->
         <div class="modal fade" id="deleteSurveyModal" tabindex="-1" aria-labelledby="deleteSurveyModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -165,7 +157,6 @@
 
 @section Scripts {
     <script>
-        // Set up modal data
         var deleteSurveyModal = document.getElementById('deleteSurveyModal');
         deleteSurveyModal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;
@@ -178,19 +169,16 @@
             modalTitle.textContent = surveyTitle;
             idInput.value = surveyId;
         });
-
-        // Copy share link function
         function copyShareLink(surveyId) {
             var url = window.location.origin + "/Responses/Take?id=" + surveyId;
 
-            // Use the clipboard API to copy the text
             navigator.clipboard.writeText(url).then(function() {
-                // Create a temporary message element
+                          
                 const message = document.createElement('div');
                 message.innerHTML = '<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050"><div class="toast align-items-center text-bg-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true"><div class="d-flex"><div class="toast-body"><i class="bi bi-check-circle-fill me-2"></i>Survey link copied to clipboard!</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div></div></div>';
                 document.body.appendChild(message);
 
-                // Remove after 3 seconds
+                        
                 setTimeout(function() {
                     message.firstChild.classList.remove('show');
                     setTimeout(function() {

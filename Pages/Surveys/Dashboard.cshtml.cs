@@ -22,13 +22,11 @@ namespace VoxPopuli.Pages.Surveys
             _context = context;
         }
 
-        // Summary metrics
         public int TotalSurveys { get; set; }
         public int TotalResponses { get; set; }
         public int ActiveSurveys { get; set; }
         public decimal AvgResponseRate { get; set; }
 
-        // Chart data
         public List<string> TrendLabels { get; set; } = new List<string>();
         public List<int> TrendData { get; set; } = new List<int>();
         public List<string> TopSurveyLabels { get; set; } = new List<string>();
@@ -38,26 +36,20 @@ namespace VoxPopuli.Pages.Surveys
         public List<double> SentimentCurrentData { get; set; } = new List<double>();
         public List<double> SentimentPreviousData { get; set; } = new List<double>();
 
-        // Recent activity
         public List<RecentActivityViewModel> RecentActivities { get; set; } = new List<RecentActivityViewModel>();
-        // Add this method to your DashboardModel class
-
         public async Task<IActionResult> OnPostExportDashboardPdfAsync()
         {
-            // First load all the data we need
             await OnGetAsync();
 
             var pdfService = HttpContext.RequestServices.GetRequiredService<VoxPopuli.Services.PDF.PdfExportService>();
 
-            // Create the list of top surveys with correct type (Dashboard ViewModel)
             var topSurveys = TopSurveyLabels.Select((title, index) => new TopSurveyViewModel
             {
                 Title = title,
                 ResponseCount = TopSurveyData[index],
-                CompletionRate = 80 // Example value, adjust as needed or calculate from your data
+                CompletionRate = 80           
             }).ToList();
 
-            // Convert RecentActivities to the required Dashboard namespace type
             var recentActivitiesForPdf = RecentActivities.Select(a => new VoxPopuli.Models.ViewModels.Dashboard.RecentActivityViewModel
             {
                 SurveyTitle = a.SurveyTitle,
@@ -67,16 +59,14 @@ namespace VoxPopuli.Pages.Surveys
                 ActionLink = a.ActionLink
             }).ToList();
 
-            // Generate the PDF
             byte[] pdfBytes = pdfService.GenerateAnalyticsDashboardPdf(
                 TotalSurveys,
                 TotalResponses,
                 ActiveSurveys,
                 AvgResponseRate,
                 topSurveys,
-                recentActivitiesForPdf); // Using our converted list
+                recentActivitiesForPdf);     
 
-            // Return as a downloadable file
             return File(
                 pdfBytes,
                 "application/pdf",
@@ -84,7 +74,6 @@ namespace VoxPopuli.Pages.Surveys
         }
         public async Task<IActionResult> OnGetAsync(string period = "monthly")
         {
-            // Calculate date ranges based on period
             DateTime startDate;
             DateTime endDate = DateTime.Today;
             List<DateTime> datePoints = new List<DateTime>();
@@ -110,7 +99,6 @@ namespace VoxPopuli.Pages.Surveys
                 case "monthly":
                 default:
                     startDate = DateTime.Today.AddDays(-30);
-                    // Create 10 data points over the period
                     for (int i = 0; i < 10; i++)
                     {
                         var point = startDate.AddDays(i * 3);
@@ -120,14 +108,12 @@ namespace VoxPopuli.Pages.Surveys
                     break;
             }
 
-            // Get summary metrics
             TotalSurveys = await _context.Surveys.CountAsync();
             TotalResponses = await _context.Responses.CountAsync();
             ActiveSurveys = await _context.Surveys
                 .Where(s => s.IsActive && (s.EndDate == null || s.EndDate >= DateTime.Today))
                 .CountAsync();
 
-            // Calculate average response rate
             var surveyWithResponses = await _context.Surveys
                 .Include(s => s.Responses)
                 .ToListAsync();
@@ -138,7 +124,6 @@ namespace VoxPopuli.Pages.Surveys
                 AvgResponseRate = Math.Round(AvgResponseRate, 1);
             }
 
-            // Trend data - responses over time
             foreach (var date in datePoints)
             {
                 var nextDate = period == "yearly" ? date.AddMonths(1) : date.AddDays(1);
@@ -149,7 +134,6 @@ namespace VoxPopuli.Pages.Surveys
                 TrendData.Add(count);
             }
 
-            // Top performing surveys
             var topSurveys = await _context.Surveys
                 .Include(s => s.Responses)
                 .OrderByDescending(s => s.Responses.Count)
@@ -160,7 +144,6 @@ namespace VoxPopuli.Pages.Surveys
             TopSurveyLabels = topSurveys.Select(s => s.Title.Length > 25 ? s.Title.Substring(0, 22) + "..." : s.Title).ToList();
             TopSurveyData = topSurveys.Select(s => s.Count).ToList();
 
-            // Response distribution by question type
             var allQuestions = await _context.Questions.ToListAsync();
             var singleChoiceCount = allQuestions.Count(q => q.QuestionType == QuestionType.SingleChoice);
             var multiChoiceCount = allQuestions.Count(q => q.QuestionType == QuestionType.MultipleChoice);
@@ -170,13 +153,9 @@ namespace VoxPopuli.Pages.Surveys
             DistributionLabels = new List<string> { "Single Choice", "Multiple Choice", "Text", "Rating" };
             DistributionData = new List<int> { singleChoiceCount, multiChoiceCount, textCount, ratingCount };
 
-            // Sentiment analysis mock data (would require NLP services for real implementation)
-            // Current month data
             SentimentCurrentData = new List<double> { 65, 45, 32, 18, 12 };
-            // Previous month data
             SentimentPreviousData = new List<double> { 54, 48, 38, 22, 10 };
 
-            // Recent activities
             RecentActivities = await _context.Responses
                 .Include(r => r.Survey)
                 .OrderByDescending(r => r.SubmittedAt)

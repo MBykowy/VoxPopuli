@@ -145,12 +145,10 @@
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Form validation for required multiple choice questions
             const form = document.getElementById('surveyForm');
             form.addEventListener('submit', function(event) {
                 const requiredMultipleChoiceGroups = document.querySelectorAll('.multiple-choice[data-required="True"]');
 
-                // Group checkboxes by question ID
                 const questionGroups = {};
                 requiredMultipleChoiceGroups.forEach(checkbox => {
                     const questionId = checkbox.getAttribute('data-question-id');
@@ -160,7 +158,6 @@
                     questionGroups[questionId].push(checkbox);
                 });
 
-                // Check if at least one checkbox is selected in each required question group
                 for (const questionId in questionGroups) {
                     const isChecked = questionGroups[questionId].some(cb => cb.checked);
                     if (!isChecked) {

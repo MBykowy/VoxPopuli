@@ -33,7 +33,6 @@ namespace VoxPopuli.Models.Domain
 
         public bool IsRequired { get; set; } = false;
 
-        // Navigation properties
         public virtual ICollection<AnswerOption> AnswerOptions { get; set; }
         public virtual ICollection<Answer> Answers { get; set; }
     }

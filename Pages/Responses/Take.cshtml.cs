@@ -9,7 +9,6 @@ using VoxPopuli.Data;
 using VoxPopuli.Models.Domain;
 using VoxPopuli.Models.ViewModels.Responses;
 using QuestionViewModels = VoxPopuli.Models.ViewModels.Questions;
-// Use alias to distinguish between the two namespaces
 using ResponseViewModels = VoxPopuli.Models.ViewModels.Responses;
 
 namespace VoxPopuli.Pages.Responses
@@ -55,7 +54,6 @@ namespace VoxPopuli.Pages.Responses
             if (!string.IsNullOrEmpty(survey.PasswordHash))
                 return RedirectToPage("PasswordPrompt", new { id = Id });
 
-            // Map database entity to view model
             Survey = new TakeSurveyViewModel
             {
                 SurveyId = survey.SurveyId,
@@ -79,13 +77,10 @@ namespace VoxPopuli.Pages.Responses
             return Page();
         }
 
-        // Rest of the code remains the same...
-
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
-                // Re-load the survey for display
                 await OnGetAsync();
                 return Page();
             }
@@ -97,7 +92,6 @@ namespace VoxPopuli.Pages.Responses
             if (survey == null)
                 return NotFound();
 
-            // Validate required questions
             var requiredIds = survey.Questions.Where(q => q.IsRequired).Select(q => q.QuestionId).ToList();
             foreach (var reqId in requiredIds)
             {
@@ -112,14 +106,12 @@ namespace VoxPopuli.Pages.Responses
 
             try
             {
-                // For anonymous responses or when AllowAnonymous is true
                 string? respondentId = null;
                 if (!Submission.IsAnonymous && User.Identity?.IsAuthenticated == true)
                 {
                     respondentId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 }
 
-                // Save response with possibly null RespondentUserId
                 var response = new Response
                 {
                     SurveyId = Submission.SurveyId,
@@ -128,7 +120,6 @@ namespace VoxPopuli.Pages.Responses
                     RespondentUserId = respondentId
                 };
 
-                // Add answers
                 response.Answers = new List<Answer>();
 
                 foreach (var answerSubmission in Submission.Answers)

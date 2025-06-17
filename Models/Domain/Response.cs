@@ -29,7 +29,6 @@ namespace VoxPopuli.Models.Domain
 
         public bool IsAnonymous { get; set; }
 
-        // Navigation properties
         public virtual ICollection<Answer> Answers { get; set; }
     }
 

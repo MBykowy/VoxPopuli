@@ -40,10 +40,8 @@ namespace VoxPopuli.Services.PDF
 
         private void ComposeHeader(IContainer container)
         {
-            // Use a column container to properly organize header elements vertically
             container.Column(column =>
             {
-                // First item contains the header content in a row
                 column.Item().Row(row =>
                 {
                     row.RelativeItem().Column(c =>
@@ -60,7 +58,6 @@ namespace VoxPopuli.Services.PDF
                     row.ConstantItem(100).Image(Placeholders.Image(100, 50));
                 });
 
-                // Second item is just for the border styling
                 column.Item().PaddingTop(5).BorderBottom(1).BorderColor(Colors.Black);
             });
         }
@@ -69,11 +66,9 @@ namespace VoxPopuli.Services.PDF
         {
             container.Column(column =>
             {
-                // Survey description
                 column.Item().PaddingTop(10).Text(_survey.Description ?? "No description provided.")
                     .FontSize(12);
 
-                // Response summary
                 column.Item().PaddingVertical(10)
                     .Text("Response Summary").FontSize(16).Bold();
 
@@ -84,7 +79,6 @@ namespace VoxPopuli.Services.PDF
                     column.Item().PaddingTop(20)
                         .Text($"Individual Responses ({_survey.ResponseCount})").FontSize(16).Bold();
 
-                    // Individual responses
                     foreach (var response in _survey.Responses.OrderByDescending(r => r.SubmittedAt))
                     {
                         column.Item().PaddingTop(15).Element(c => ComposeResponseDetail(c, response));
@@ -101,7 +95,6 @@ namespace VoxPopuli.Services.PDF
         {
             container.Column(column =>
             {
-                // Display metrics
                 column.Item().Grid(grid =>
                 {
                     grid.Columns(2);
@@ -120,7 +113,6 @@ namespace VoxPopuli.Services.PDF
                     });
                 });
 
-                // Timeline data
                 if (_survey.ResponseDateCounts != null && _survey.ResponseDateCounts.Any())
                 {
                     column.Item().PaddingVertical(10).Text("Response Timeline").FontSize(14).Bold();
@@ -153,7 +145,6 @@ namespace VoxPopuli.Services.PDF
         {
             container.Border(1).BorderColor(Colors.Grey.Lighten2).Padding(10).Column(column =>
             {
-                // Response header
                 column.Item().Row(row =>
                 {
                     row.RelativeItem().Column(c =>
@@ -168,7 +159,6 @@ namespace VoxPopuli.Services.PDF
 
                 column.Item().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingBottom(5);
 
-                // Response answers
                 if (response.Answers != null && response.Answers.Any())
                 {
                     column.Item().PaddingTop(5);
@@ -190,7 +180,6 @@ namespace VoxPopuli.Services.PDF
             {
                 column.Item().Text(answer.QuestionText).FontSize(12).Bold();
 
-                // Display the answer based on what data is available
                 if (!string.IsNullOrEmpty(answer.SelectedOptionText))
                 {
                     column.Item().Text(answer.SelectedOptionText);

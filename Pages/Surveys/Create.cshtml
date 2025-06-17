@@ -192,62 +192,49 @@
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Get references to key elements
             const addQuestionBtn = document.getElementById('addQuestionBtn');
             const questionsContainer = document.getElementById('questionsContainer');
             const noQuestionsMessage = document.getElementById('noQuestionsMessage');
             const questionTemplate = document.querySelector('.question-template').innerHTML;
             const optionTemplate = document.querySelector('.option-template').innerHTML;
 
-            // Track how many questions have been added
             let questionCounter = 0;
 
-            // Initialize the form - hide templates that shouldn't be rendered
             document.querySelector('.question-template').remove();
             document.querySelector('.option-template').remove();
 
-            // Add question button click handler
             addQuestionBtn.addEventListener('click', function() {
-                // Hide the "no questions" message when adding the first question
                 if (questionCounter === 0) {
                     noQuestionsMessage.style.display = 'none';
                 }
 
-                // Create a new question element
                 addNewQuestion();
             });
 
-            // Function to add a new question
             function addNewQuestion() {
                 questionCounter++;
 
-                // Create a new question wrapper
                 const questionWrapper = document.createElement('div');
                 questionWrapper.innerHTML = questionTemplate;
                 const questionElement = questionWrapper.firstElementChild;
 
-                // Update question number
                 questionElement.querySelector('.question-number').textContent = questionCounter;
 
-                // Set unique IDs for form elements
                 const requiredSwitch = questionElement.querySelector('.question-required');
                 const uniqueId = 'question_' + questionCounter + '_required';
                 requiredSwitch.id = uniqueId;
                 requiredSwitch.nextElementSibling.setAttribute('for', uniqueId);
 
-                // Add event listeners for the question type dropdown
                 const questionTypeSelect = questionElement.querySelector('.question-type');
                 questionTypeSelect.addEventListener('change', function() {
                     updateOptionsVisibility(questionElement, this.value);
                 });
 
-                // Add event listener for adding options
                 const addOptionBtn = questionElement.querySelector('.add-option-btn');
                 addOptionBtn.addEventListener('click', function() {
                     addOptionToQuestion(questionElement);
                 });
 
-                // Add event listeners for question action buttons
                 const removeBtn = questionElement.querySelector('.remove-question-btn');
                 removeBtn.addEventListener('click', function() {
                     removeQuestion(questionElement);
@@ -263,7 +250,6 @@
                     moveQuestionDown(questionElement);
                 });
 
-                // Add hidden inputs to store the question data for form submission
                 const questionTextInput = questionElement.querySelector('.question-text');
                 questionTextInput.name = `Survey.Questions[${questionCounter - 1}].QuestionText`;
 
@@ -274,14 +260,12 @@
                 questionRequiredInput.name = `Survey.Questions[${questionCounter - 1}].IsRequired`;
                 questionRequiredInput.value = "true";
 
-                // Initialize the question type and add default options ONLY IF NEEDED
                 updateOptionsVisibility(questionElement, questionTypeSelect.value);
 
                 questionsContainer.appendChild(questionElement);
                 questionTextInput.focus();
             }
 
-            // Function to add an option to a question
             function addOptionToQuestion(questionElement) {
                 const optionsContainer = questionElement.querySelector('.options-list');
                 const questionIndex = parseInt(questionElement.querySelector('.question-number').textContent) - 1;
@@ -395,7 +379,6 @@
                 }
             }
 
-            // Form validation before submission
             document.getElementById('surveyForm').addEventListener('submit', function(event) {
                 console.log("Form submission initiated (from submit event listener)");
                 const questionsInForm = questionsContainer.querySelectorAll('.question-item');

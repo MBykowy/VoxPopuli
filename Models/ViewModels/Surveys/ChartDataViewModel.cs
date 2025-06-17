@@ -10,7 +10,7 @@
             BorderColors = new List<string>();
         }
 
-        public string ChartType { get; set; } = "bar"; // Default chart type (bar, pie, doughnut, etc.)
+        public string ChartType { get; set; } = "bar";        
 
         public List<string> Labels { get; set; }
 
@@ -22,27 +22,26 @@
 
         public string Title { get; set; } = string.Empty;
 
-        // Helper method to generate default colors
         public void GenerateDefaultColors(int count)
         {
             var defaultBackgroundColors = new List<string>
             {
-                "rgba(255, 99, 132, 0.2)",   // Red
-                "rgba(54, 162, 235, 0.2)",   // Blue
-                "rgba(255, 206, 86, 0.2)",   // Yellow
-                "rgba(75, 192, 192, 0.2)",   // Green
-                "rgba(153, 102, 255, 0.2)",  // Purple
-                "rgba(255, 159, 64, 0.2)"    // Orange
+                "rgba(255, 99, 132, 0.2)",    
+                "rgba(54, 162, 235, 0.2)",    
+                "rgba(255, 206, 86, 0.2)",    
+                "rgba(75, 192, 192, 0.2)",    
+                "rgba(153, 102, 255, 0.2)",   
+                "rgba(255, 159, 64, 0.2)"     
             };
 
             var defaultBorderColors = new List<string>
             {
-                "rgba(255, 99, 132, 1)",     // Red
-                "rgba(54, 162, 235, 1)",     // Blue
-                "rgba(255, 206, 86, 1)",     // Yellow
-                "rgba(75, 192, 192, 1)",     // Green
-                "rgba(153, 102, 255, 1)",    // Purple
-                "rgba(255, 159, 64, 1)"      // Orange
+                "rgba(255, 99, 132, 1)",      
+                "rgba(54, 162, 235, 1)",      
+                "rgba(255, 206, 86, 1)",      
+                "rgba(75, 192, 192, 1)",      
+                "rgba(153, 102, 255, 1)",     
+                "rgba(255, 159, 64, 1)"       
             };
 
             BackgroundColors.Clear();

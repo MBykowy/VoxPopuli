@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using VoxPopuli.Data;
 using VoxPopuli.Models.Domain;
 using VoxPopuli.Models.ViewModels.Surveys;
-using VoxPopuli.Models.ViewModels.Questions; // Added missing namespace for QuestionViewModel
+using VoxPopuli.Models.ViewModels.Questions;      
 using AutoMapper;
 using BCrypt.Net;
 using Microsoft.Extensions.Logging;
@@ -39,7 +39,6 @@ namespace VoxPopuli.Pages.Surveys
 
         public async Task<IActionResult> OnGetAsync()
         {
-            // Retrieve the survey with all related data
             var survey = await _context.Surveys
                 .Include(s => s.Questions)
                     .ThenInclude(q => q.AnswerOptions)
@@ -50,14 +49,12 @@ namespace VoxPopuli.Pages.Surveys
                 return NotFound();
             }
 
-            // Security check - only allow the survey creator or admin to edit
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (survey.CreatorUserId != currentUserId && !User.IsInRole("Admin"))
             {
                 _logger.LogWarning("Unauthorized access attempt to edit survey {SurveyId} by user {UserId}", Id, currentUserId);
                 return Forbid();
             }
-            // In the Survey property initialization
             Survey = new SurveyCreateViewModel
             {
                 Title = survey.Title,
@@ -71,10 +68,8 @@ namespace VoxPopuli.Pages.Surveys
             };
 
 
-            // Map each question and its options
             foreach (var question in survey.Questions.OrderBy(q => q.Order))
             {
-                // When creating a new QuestionViewModel
                 var questionVM = new VoxPopuli.Models.ViewModels.Questions.QuestionViewModel
                 {
                     QuestionId = question.QuestionId,
@@ -85,7 +80,6 @@ namespace VoxPopuli.Pages.Surveys
                     Options = new List<VoxPopuli.Models.ViewModels.Questions.AnswerOptionViewModel>()
                 };
 
-                // Map options for choice questions
                 if (question.AnswerOptions != null)
                 {
                     foreach (var option in question.AnswerOptions.OrderBy(o => o.Order))
@@ -116,7 +110,6 @@ namespace VoxPopuli.Pages.Surveys
                 return Page();
             }
 
-            // Retrieve the original survey
             var survey = await _context.Surveys
                 .Include(s => s.Questions)
                     .ThenInclude(q => q.AnswerOptions)
@@ -127,7 +120,6 @@ namespace VoxPopuli.Pages.Surveys
                 return NotFound();
             }
 
-            // Security check - only allow the survey creator or admin to edit
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (survey.CreatorUserId != currentUserId && !User.IsInRole("Admin"))
             {
@@ -137,7 +129,6 @@ namespace VoxPopuli.Pages.Surveys
 
             try
             {
-                // Update basic survey properties
                 survey.Title = Survey.Title;
                 survey.Description = Survey.Description ?? string.Empty;
                 survey.StartDate = Survey.StartDate;
@@ -145,13 +136,11 @@ namespace VoxPopuli.Pages.Surveys
                 survey.IsActive = Survey.IsActive;
                 survey.AllowAnonymous = Survey.AllowAnonymous;
 
-                // Update password if provided
                 if (!string.IsNullOrEmpty(Survey.Password))
                 {
                     survey.PasswordHash = BCrypt.Net.BCrypt.HashPassword(Survey.Password);
                 }
 
-                // Process questions
                 if (Survey.Questions != null)
                 {
                     var existingQuestionIds = survey.Questions.Select(q => q.QuestionId).ToList();
@@ -160,7 +149,6 @@ namespace VoxPopuli.Pages.Surveys
                         .Select(q => q.QuestionId)
                         .ToList();
 
-                    // Find questions to delete (in existing but not in submitted)
                     var questionsToDelete = existingQuestionIds.Except(submittedQuestionIds).ToList();
                     foreach (var questionId in questionsToDelete)
                     {
@@ -175,7 +163,6 @@ namespace VoxPopuli.Pages.Surveys
                         }
                     }
 
-                    // Process each question in the submitted form
                     int questionOrder = 0;
                     foreach (var questionVM in Survey.Questions)
                     {
@@ -183,7 +170,6 @@ namespace VoxPopuli.Pages.Surveys
 
                         if (questionVM.QuestionId > 0)
                         {
-                            // Update existing question
                             question = survey.Questions.FirstOrDefault(q => q.QuestionId == questionVM.QuestionId);
                             if (question != null)
                             {
@@ -192,12 +178,10 @@ namespace VoxPopuli.Pages.Surveys
                                 question.IsRequired = questionVM.IsRequired;
                                 question.Order = questionOrder++;
 
-                                // Update options for choice questions
                                 if ((question.QuestionType == QuestionType.SingleChoice ||
                                      question.QuestionType == QuestionType.MultipleChoice) &&
                                      questionVM.Options != null)
                                 {
-                                    // Remove options not in the updated set
                                     var existingOptionIds = question.AnswerOptions.Select(o => o.AnswerOptionId).ToList();
                                     var submittedOptionIds = questionVM.Options
                                         .Where(o => o.AnswerOptionId > 0)
@@ -214,13 +198,11 @@ namespace VoxPopuli.Pages.Surveys
                                         }
                                     }
 
-                                    // Add or update options
                                     int optionOrder = 0;
                                     foreach (var optionVM in questionVM.Options)
                                     {
                                         if (optionVM.AnswerOptionId > 0)
                                         {
-                                            // Update existing option
                                             var existingOption = question.AnswerOptions.FirstOrDefault(o => o.AnswerOptionId == optionVM.AnswerOptionId);
                                             if (existingOption != null)
                                             {
@@ -230,7 +212,6 @@ namespace VoxPopuli.Pages.Surveys
                                         }
                                         else
                                         {
-                                            // Add new option
                                             var newOption = new AnswerOption
                                             {
                                                 QuestionId = question.QuestionId,
@@ -243,7 +224,6 @@ namespace VoxPopuli.Pages.Surveys
                                 }
                                 else
                                 {
-                                    // If question type changed from choice to non-choice, remove all options
                                     if (question.AnswerOptions.Any())
                                     {
                                         _context.AnswerOptions.RemoveRange(question.AnswerOptions);
@@ -253,7 +233,6 @@ namespace VoxPopuli.Pages.Surveys
                         }
                         else
                         {
-                            // Add new question
                             question = new Question
                             {
                                 SurveyId = survey.SurveyId,
@@ -264,9 +243,8 @@ namespace VoxPopuli.Pages.Surveys
                             };
 
                             _context.Questions.Add(question);
-                            await _context.SaveChangesAsync(); // Save to get ID for options
+                            await _context.SaveChangesAsync();       
 
-                            // Add options for choice questions
                             if ((question.QuestionType == QuestionType.SingleChoice ||
                                  question.QuestionType == QuestionType.MultipleChoice) &&
                                  questionVM.Options != null)
@@ -289,7 +267,6 @@ namespace VoxPopuli.Pages.Surveys
 
                 await _context.SaveChangesAsync();
 
-                // Add success message to TempData
                 TempData["SuccessMessage"] = $"Survey '{survey.Title}' has been updated successfully!";
 
                 return RedirectToPage("List");
